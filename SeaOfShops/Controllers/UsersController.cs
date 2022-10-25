@@ -1,16 +1,18 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SeaOfShops.Models;
 using SeaOfShops.ViewModels;
+using System.Data;
 
 namespace SeaOfShops.Controllers
 {
+   // [Authorize(Roles = AdminRole)]
     public class UsersController : Controller
     {
         UserManager<User> _userManager;
         private readonly IWebHostEnvironment _hostEnvironment;
         private const string AdminRole = "admin";
-        private const string AssistantRole = "moderator";
        
         public UsersController(UserManager<User> userManager, IWebHostEnvironment hostEnvironment)
         {

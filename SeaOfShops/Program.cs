@@ -13,11 +13,11 @@ builder.Services.AddTransient<IPasswordValidator<User>,
 builder.Services.AddTransient<IUserValidator<User>, CustomUserValidator>();
 
 
-builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
-
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationContext>();
+
+builder.Services.AddDbContext<ApplicationContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

@@ -1,14 +1,18 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SeaOfShops.Models;
 using SeaOfShops.ViewModels;
+using System.Data;
 
 namespace SeaOfShops.Controllers
 {
+    //[Authorize(Roles = AdminRole)]
     public class RolesController : Controller
     {
         RoleManager<IdentityRole> _roleManager;
         UserManager<User> _userManager;
+        private const string AdminRole = "admin";
         public RolesController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
         {
             _roleManager = roleManager;
