@@ -7,6 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddTransient<IPasswordValidator<User>,
+            CustomPasswordValidator>(serv => new CustomPasswordValidator(6));
+
+builder.Services.AddTransient<IUserValidator<User>, CustomUserValidator>();
+
+
 builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
 
@@ -37,6 +43,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Users}/{action=Index}/{id?}");
 
 app.Run();
