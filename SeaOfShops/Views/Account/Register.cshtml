@@ -1,0 +1,40 @@
+﻿@model SeaOfShops.ViewModels.RegisterViewModel
+
+<h2>Регистрация нового пользователя</h2>
+
+<form method="post" asp-controller="Account" asp-action="Register" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="Email"></label><br />
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+    <div>
+        <label asp-for="RealName"></label><br />
+        <input asp-for="RealName" />
+        <span asp-validation-for="RealName"></span>
+    </div>
+    <div>
+        <label asp-for="LastName"></label><br />
+        <input asp-for="LastName" />
+        <span asp-validation-for="LastName"></span>
+    </div>
+    <div>
+        <label asp-for="ImageFile"></label><br />
+        <input asp-for="ImageFile" accept="image/*" />
+        <span asp-validation-for="ImageFile"></span>
+    </div>
+    <div>
+        <label asp-for="Password"></label><br />
+        <input asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div>
+        <label asp-for="PasswordConfirm"></label><br />
+        <input asp-for="PasswordConfirm" />
+        <span asp-validation-for="PasswordConfirm"></span>
+    </div>
+    <div>
+        <input type="submit" value="Регистрация" />
+    </div>
+</form>
