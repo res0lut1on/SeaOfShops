@@ -1,0 +1,41 @@
+﻿@model IEnumerable<SeaOfShops.Models.User>
+
+@{
+    ViewBag.Title = "Список пользователей";
+}
+
+<a asp-action="Create">Добавить пользователя</a>
+
+<table class="table">
+    <tr>
+        <th>Email</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Картинка</th>
+    </tr>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Email</td>
+            <td>@user.RealName</td>
+            <td>@user.LastName</td>
+            @if (user.ImageName != "niko.jpg")
+            {
+                <td>@await Component.InvokeAsync("Avatar", user.Email)</td>
+            }else
+            {
+                <td>Without</td>
+            }
+            <td>
+                <form asp-action="Delete" asp-route-id="@user.Id" method="post">
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@user.Id">Изменить</a>
+                    <a class="btn btn-sm btn-primary" asp-action="ChangePassword" asp-route-id="@user.Id">Сменить пароль</a>
+                    <button type="submit" class="btn btn-sm btn-danger">
+                        Удалить
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+
