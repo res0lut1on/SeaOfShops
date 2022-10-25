@@ -17,6 +17,13 @@ namespace SeaOfShops.Models
         public Task<IdentityResult> ValidateAsync(UserManager<User> manager, User user)
         {
             List<IdentityError> errors = new List<IdentityError>();
+            if (!MailAddress.TryCreate(user.Email, out var address))
+            {
+                errors.Add(new IdentityError
+                {
+                    Description = "Неверный формат почты"
+                });
+            }
             if (user.Email.ToLower().EndsWith("@mail.ru")) // ограничение по почте
             {
                 errors.Add(new IdentityError
@@ -41,13 +48,6 @@ namespace SeaOfShops.Models
                     Description = "Неверный формат почты"
                 });
             }*/
-            if (!MailAddress.TryCreate(user.Email, out var address))
-            {
-                errors.Add(new IdentityError
-                {
-                    Description = "Неверный формат почты"
-                });
-            }
             if (user.UserName.Contains("Rostik"))
             {
                 errors.Add(new IdentityError
