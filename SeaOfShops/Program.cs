@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SeaOfShops.Models;
+using WEB_3505_MIK;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.AddFile(Path.Combine(Directory.GetCurrentDirectory(), "logger.txt"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SeaOfShops.LoggerProvider;
 using SeaOfShops.Models;
 using SeaOfShops.ViewModels;
 using System.Data;
@@ -10,14 +11,21 @@ namespace SeaOfShops.Controllers
    // [Authorize(Roles = AdminRole)]
     public class UsersController : Controller
     {
-        UserManager<User> _userManager;
+        private readonly ILogger _logger;
+        private UserManager<User> _userManager;
         private readonly IWebHostEnvironment _hostEnvironment;
         private const string AdminRole = "admin";
        
-        public UsersController(UserManager<User> userManager, IWebHostEnvironment hostEnvironment)
+        public UsersController(UserManager<User> userManager, IWebHostEnvironment hostEnvironment, ILoggerFactory logger)
         {
+            _logger = logger.CreateLogger("MyUsers");
             _userManager = userManager;
             this._hostEnvironment = hostEnvironment;
+        }
+        public void OnGet()
+        {
+            _logger.LogInformation("About page visited at {DT}",
+                        DateTime.UtcNow.ToLongTimeString());
         }
 
         public IActionResult Index() => View(_userManager.Users.ToList());
@@ -27,6 +35,10 @@ namespace SeaOfShops.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserViewModel model)
         {
+            var routeInfo = Request.Path + model.Email;
+            _logger.Log(LogLevel.Information, MyLogEvents.CreateItem, routeInfo);
+            _logger.LogInformation(MyLogEvents.CreateItem, routeInfo); 
+
             if (ModelState.IsValid)
             {
                 string? ImageName = null;
