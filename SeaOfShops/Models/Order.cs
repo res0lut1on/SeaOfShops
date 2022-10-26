@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace SeaOfShops.Models
 {
@@ -8,6 +9,7 @@ namespace SeaOfShops.Models
 		public int OrderId { get; set; }
 		public int Price { get; set; }
 		public bool Сompleted { get; set; }
+		[DisplayName("List of products")]
 		public List<Product> Products { get; set; }
 	}
 }

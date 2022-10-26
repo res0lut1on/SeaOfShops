@@ -1,0 +1,136 @@
+﻿@model IEnumerable<SeaOfShops.Models.Product>
+
+@{
+    ViewData["Title"] = "All products";
+}
+
+<h1>List of all products in the system (available only for administrators)</h1>
+<h3>Your is Authenticated -> @User.Identity.IsAuthenticated as @User.Identity.Name</h3>
+<p>
+    <a asp-action="AddOrEdit" class="btn btn-outline-danger">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Color)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsDeleted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Shop)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Color)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsDeleted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Shop.ShopName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<br />
+<div class="row">
+    @foreach (var item in Model)
+    {   
+        @if(item.IsDeleted != true)
+        {
+            <div class="col-sm-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5><label asp-for="@item.ProductName" class="card-title">@item.ProductName</label><br /></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@item.Shop.ShopName</h6>
+                        <p><label asp-for="@item.Color" class="card-text">@item.Color</label></p>
+                        <p><label asp-for="@item.Price" class="card-text">@item.PriceWithProc</label></p>
+
+                        <div>
+                            <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-dark">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-dark">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }    
+    }
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            @if (Context.Request.QueryString.HasValue)
+            {
+                var a = ViewBag.CountProducts;
+                @if (int.Parse(Context.Request.Query["pageNo"]) == 1)
+                {
+                    <li class="page-item disabled">
+                        <a asp-action="Index" asp-controller="Product" class="page-link" asp-route-pageNo="@(int.Parse(Context.Request.Query["pageNo"]) - 1)">Prev</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a asp-action="Index" asp-controller="Product" class="page-link" asp-route-pageNo="@(int.Parse(Context.Request.Query["pageNo"]) - 1)">Prev</a>
+                    </li>
+                }
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <a asp-action="Index" asp-controller="Product" class="page-link" asp-route-pageNo="0">Prev</a>
+                </li>
+            }
+            @for (int i = 1; i <= ViewBag.CountProducts; i++)
+            {
+                <li class="page-item"><a asp-action="Index" asp-controller="Product" asp-route-pageNo="@i" class="page-link">@i</a></li>
+            }
+            @if (Context.Request.QueryString.HasValue)
+            {
+                var a = ViewBag.CountProducts;
+                @if (int.Parse(Context.Request.Query["pageNo"]) == ViewBag.CountProducts)
+                {
+                    <li class="page-item disabled">
+                        <a asp-action="Index" asp-controller="Product" class="page-link" asp-route-pageNo="@(int.Parse(Context.Request.Query["pageNo"]) + 1)">Next</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a asp-action="Index" asp-controller="Product" class="page-link" asp-route-pageNo="@(int.Parse(Context.Request.Query["pageNo"]) + 1)">Next</a>
+                    </li>
+                }
+            }
+            else
+            {
+                <li class="page-item">
+                    <a asp-action="Index" asp-controller="Product" class="page-link" asp-route-pageNo="2">Next</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>

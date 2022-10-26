@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SeaOfShops.Models;
+using SeaOfShops.Data;
 
 #nullable disable
 
@@ -155,6 +155,21 @@ namespace SeaOfShops.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("OrderProduct", b =>
+                {
+                    b.Property<int>("OrdersOrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrdersOrderId", "ProductsProductId");
+
+                    b.HasIndex("ProductsProductId");
+
+                    b.ToTable("OrderProduct");
+                });
+
             modelBuilder.Entity("SeaOfShops.Models.Order", b =>
                 {
                     b.Property<int>("OrderId")
@@ -189,9 +204,6 @@ namespace SeaOfShops.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
@@ -203,8 +215,6 @@ namespace SeaOfShops.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
-
-                    b.HasIndex("OrderId");
 
                     b.HasIndex("ShopId");
 
@@ -363,12 +373,23 @@ namespace SeaOfShops.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SeaOfShops.Models.Product", b =>
+            modelBuilder.Entity("OrderProduct", b =>
                 {
                     b.HasOne("SeaOfShops.Models.Order", null)
-                        .WithMany("Products")
-                        .HasForeignKey("OrderId");
+                        .WithMany()
+                        .HasForeignKey("OrdersOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
+                    b.HasOne("SeaOfShops.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SeaOfShops.Models.Product", b =>
+                {
                     b.HasOne("SeaOfShops.Models.Shop", "Shop")
                         .WithMany("Products")
                         .HasForeignKey("ShopId")
@@ -387,11 +408,6 @@ namespace SeaOfShops.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SeaOfShops.Models.Order", b =>
-                {
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("SeaOfShops.Models.Shop", b =>
