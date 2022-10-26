@@ -12,8 +12,8 @@ using SeaOfShops.Models;
 namespace SeaOfShops.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20221026125149_init")]
-    partial class init
+    [Migration("20221026145427_add IsDeleted")]
+    partial class addIsDeleted
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -176,7 +176,7 @@ namespace SeaOfShops.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("SeaOfShops.Models.OrderedProduct", b =>
+            modelBuilder.Entity("SeaOfShops.Models.Product", b =>
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -187,6 +187,9 @@ namespace SeaOfShops.Migrations
                     b.Property<string>("Color")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
@@ -204,35 +207,6 @@ namespace SeaOfShops.Migrations
                     b.HasKey("ProductId");
 
                     b.HasIndex("OrderId");
-
-                    b.HasIndex("ShopId");
-
-                    b.ToTable("OrderedProduct");
-                });
-
-            modelBuilder.Entity("SeaOfShops.Models.Product", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"), 1L, 1);
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("ShopId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId");
 
                     b.HasIndex("ShopId");
 
@@ -391,23 +365,12 @@ namespace SeaOfShops.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SeaOfShops.Models.OrderedProduct", b =>
+            modelBuilder.Entity("SeaOfShops.Models.Product", b =>
                 {
                     b.HasOne("SeaOfShops.Models.Order", null)
                         .WithMany("Products")
                         .HasForeignKey("OrderId");
 
-                    b.HasOne("SeaOfShops.Models.Shop", "Shop")
-                        .WithMany()
-                        .HasForeignKey("ShopId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Shop");
-                });
-
-            modelBuilder.Entity("SeaOfShops.Models.Product", b =>
-                {
                     b.HasOne("SeaOfShops.Models.Shop", "Shop")
                         .WithMany("Products")
                         .HasForeignKey("ShopId")

@@ -62,9 +62,6 @@ using (var scope = app.Services.CreateScope())
         var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var dataManager = services.GetRequiredService<ApplicationContext>();
         await DataInitializer.InitializeAsync(userManager, rolesManager, dataManager);
-
-       
-        await DataInitializer.InitializeAsync(dataManager);
     }
     catch (Exception ex)
     {

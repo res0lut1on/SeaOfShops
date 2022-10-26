@@ -8,6 +8,6 @@ namespace SeaOfShops.Models
 		public int OrderId { get; set; }
 		public int Price { get; set; }
 		public bool Сompleted { get; set; }
-		public List<OrderedProduct> Products { get; set; }
+		public List<Product> Products { get; set; }
 	}
 }

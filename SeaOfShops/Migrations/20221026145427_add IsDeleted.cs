@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SeaOfShops.Migrations
 {
-    public partial class init : Migration
+    public partial class addIsDeleted : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -193,34 +193,6 @@ namespace SeaOfShops.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderedProduct",
-                columns: table => new
-                {
-                    ProductId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductName = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    Color = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    Price = table.Column<int>(type: "int", nullable: false),
-                    ShopId = table.Column<int>(type: "int", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderedProduct", x => x.ProductId);
-                    table.ForeignKey(
-                        name: "FK_OrderedProduct_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "OrderId");
-                    table.ForeignKey(
-                        name: "FK_OrderedProduct_Shops_ShopId",
-                        column: x => x.ShopId,
-                        principalTable: "Shops",
-                        principalColumn: "ShopId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -228,12 +200,19 @@ namespace SeaOfShops.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     Color = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
-                    ShopId = table.Column<int>(type: "int", nullable: false)
+                    ShopId = table.Column<int>(type: "int", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.ProductId);
+                    table.ForeignKey(
+                        name: "FK_Products_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "OrderId");
                     table.ForeignKey(
                         name: "FK_Products_Shops_ShopId",
                         column: x => x.ShopId,
@@ -282,14 +261,9 @@ namespace SeaOfShops.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderedProduct_OrderId",
-                table: "OrderedProduct",
+                name: "IX_Products_OrderId",
+                table: "Products",
                 column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderedProduct_ShopId",
-                table: "OrderedProduct",
-                column: "ShopId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_ShopId",
@@ -318,9 +292,6 @@ namespace SeaOfShops.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "OrderedProduct");
 
             migrationBuilder.DropTable(
                 name: "Products");

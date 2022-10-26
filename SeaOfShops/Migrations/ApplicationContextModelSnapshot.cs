@@ -174,38 +174,6 @@ namespace SeaOfShops.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("SeaOfShops.Models.OrderedProduct", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"), 1L, 1);
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("ShopName")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderedProduct");
-                });
-
             modelBuilder.Entity("SeaOfShops.Models.Product", b =>
                 {
                     b.Property<int>("ProductId")
@@ -218,6 +186,12 @@ namespace SeaOfShops.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
@@ -229,6 +203,8 @@ namespace SeaOfShops.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("ShopId");
 
@@ -387,15 +363,12 @@ namespace SeaOfShops.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SeaOfShops.Models.OrderedProduct", b =>
+            modelBuilder.Entity("SeaOfShops.Models.Product", b =>
                 {
                     b.HasOne("SeaOfShops.Models.Order", null)
                         .WithMany("Products")
                         .HasForeignKey("OrderId");
-                });
 
-            modelBuilder.Entity("SeaOfShops.Models.Product", b =>
-                {
                     b.HasOne("SeaOfShops.Models.Shop", "Shop")
                         .WithMany("Products")
                         .HasForeignKey("ShopId")

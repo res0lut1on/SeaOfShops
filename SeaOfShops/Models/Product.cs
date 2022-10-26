@@ -17,6 +17,8 @@ namespace SeaOfShops.Models
 
         [Column(TypeName = "nvarchar(50)")]
         public string Color { get; set; }
+        [Required]
+        public bool IsDeleted { get; set; } = false;
         public int Price { get; set; }
         public int ShopId { get; set; }
         public Shop? Shop { get; set; }
