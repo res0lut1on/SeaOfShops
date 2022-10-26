@@ -23,7 +23,9 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationContext>();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection"));
+});
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -58,7 +60,11 @@ using (var scope = app.Services.CreateScope())
     {
         var userManager = services.GetRequiredService<UserManager<User>>();
         var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        await RoleInitializer.InitializeAsync(userManager, rolesManager);
+        var dataManager = services.GetRequiredService<ApplicationContext>();
+        await DataInitializer.InitializeAsync(userManager, rolesManager, dataManager);
+
+       
+        await DataInitializer.InitializeAsync(dataManager);
     }
     catch (Exception ex)
     {

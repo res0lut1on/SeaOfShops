@@ -3,10 +3,12 @@ using SeaOfShops.Models;
 
 namespace SeaOfShops.DbInitializer
 {
-    public class RoleInitializer
+    public class DataInitializer
     {
-        public static async Task InitializeAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task InitializeAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, ApplicationContext context)
         {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
             string adminEmail = "admin@gmail.com";
             string password = "123123";
 

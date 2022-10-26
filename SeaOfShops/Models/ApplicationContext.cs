@@ -1,18 +1,34 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Options;
 
 namespace SeaOfShops.Models
 {
     public class ApplicationContext : IdentityDbContext<User>
     {
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Shop> Shops { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        private readonly StreamWriter logStream = new StreamWriter("myDbLog.txt", true);
 		public ApplicationContext(DbContextOptions<ApplicationContext> options)
             :base(options)
         {
         }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Shop> Shops { get; set; }
-        public DbSet<Order> Orders { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.LogTo(logStream.WriteLine, LogLevel.Debug);
+        }
+        public override void Dispose()
+        {
+            base.Dispose();
+            logStream.Dispose();
+        }
+        public override async ValueTask DisposeAsync()
+        {
+            await base.DisposeAsync();
+            await logStream.DisposeAsync();
+        }
     }
     public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ApplicationContext>
     {

@@ -5,8 +5,8 @@ using System.ComponentModel;
 
 namespace SeaOfShops.Models
 {
-	public class Product
-	{
+    public class OrderedProduct
+    {
         [Key]
         public int ProductId { get; set; }
 
@@ -18,7 +18,6 @@ namespace SeaOfShops.Models
         [Column(TypeName = "nvarchar(50)")]
         public string Color { get; set; }
         public int Price { get; set; }
-        public int ShopId { get; set; }
-        public Shop? Shop { get; set; }
+        public int ShopName { get; set; }
     }
 }

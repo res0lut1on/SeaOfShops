@@ -9,10 +9,12 @@ namespace SeaOfShops.Models
 	{
         [Key]
         public int ShopId { get; set; }
+
         [DisplayName("Shop Name")]
         [Column(TypeName = "nvarchar(50)")]
         [Required(ErrorMessage = "Name is required.")]
         public string ShopName { get; set; }
+
         [DisplayName("Store Address")]
         [Column(TypeName = "nvarchar(50)")]
         public string StoreAddress { get; set; }
