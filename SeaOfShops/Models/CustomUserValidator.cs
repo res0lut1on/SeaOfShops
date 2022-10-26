@@ -32,13 +32,14 @@ namespace SeaOfShops.Models
                 });
             }
             var pureEmail = Regex.Replace(user.Email, @"\s+", "");
-            if (_context.Users.FirstOrDefault(p => p.Email == pureEmail) != null)
+
+            /*if (_context.Users.FirstOrDefault(p => p.Email == pureEmail) != null)
             {
                 errors.Add(new IdentityError
                 {
                     Description = "Пользователь с таким Email уже зарегистрирован"
                 });
-            }
+            }*/
             
             /*string pattern = @"\^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$\";
             if (!Regex.IsMatch(user.Email, pattern))
