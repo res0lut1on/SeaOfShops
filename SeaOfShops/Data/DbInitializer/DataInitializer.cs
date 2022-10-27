@@ -11,18 +11,22 @@ namespace SeaOfShops.DbInitializer
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            string adminEmail = "admin@gmail.com";
-            string password = "123123";
+            // Add Roles
+
+            if (await roleManager.FindByNameAsync("courier") == null)
+            {
+                await roleManager.CreateAsync(new IdentityRole("courier"));
+            }
 
             if (await roleManager.FindByNameAsync("admin") == null)
             {
                 await roleManager.CreateAsync(new IdentityRole("admin"));
             }
 
-            if (await roleManager.FindByNameAsync("courier") == null)
-            {
-                await roleManager.CreateAsync(new IdentityRole("courier"));
-            }
+            // Add users
+
+            string adminEmail = "admin@gmail.com";
+            string adminPassword = "123123";
 
             if (await userManager.FindByNameAsync(adminEmail) == null)
             {
@@ -30,15 +34,55 @@ namespace SeaOfShops.DbInitializer
                 { 
                     Email = adminEmail, 
                     UserName = adminEmail, 
-                    ImageName = "niko.jpg", 
+                    ImageName = "Ainsley.jpg", 
                     RealName = "Admin" 
                 };
-                IdentityResult result = await userManager.CreateAsync(admin, password);
+                IdentityResult result = await userManager.CreateAsync(admin, adminPassword);
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(admin, "admin");
                 }
             }
+
+            string courierEmail = "courier@gmail.com";
+            string courierPassword = "123123";
+
+            if (await userManager.FindByNameAsync(courierEmail) == null)
+            {
+                User courier = new User
+                {
+                    Email = courierEmail,
+                    UserName = courierEmail,
+                    ImageName = "avatarochka.jpg",
+                    RealName = "Courier"
+                };
+                IdentityResult result = await userManager.CreateAsync(courier, courierPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(courier, "courier");
+                }
+            }
+
+            string godEmail = "god@heaven.com";
+            string godPassword = "666666";
+
+            if (await userManager.FindByNameAsync(godEmail) == null)
+            {
+                User god = new User
+                {
+                    Email = godEmail,
+                    UserName = godEmail,
+                    RealName = "God"
+                };
+                IdentityResult result = await userManager.CreateAsync(god, godPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(god, "admin");
+                    await userManager.AddToRoleAsync(god, "courier");
+                }
+            }
+
+            // Add Shops
 
             Shop lequint = new Shop() 
             { 
@@ -54,6 +98,8 @@ namespace SeaOfShops.DbInitializer
             };
 
             context.Shops.AddRange(lequint, kfc);
+
+            // Add Products
 
             Product product1 = new Product()
             {
@@ -93,11 +139,12 @@ namespace SeaOfShops.DbInitializer
 
             context.Products.AddRange(product1, product2, product3, product4, product5);
 
+            // Add Orders
+
             var productList = new List<Product>()
                 {
                     product1, product4
                 };
-
             Order order1 = new Order()
             {
                 Products = productList,
@@ -109,7 +156,6 @@ namespace SeaOfShops.DbInitializer
                 {
                     product2, product4
                 };
-
             Order order2 = new Order()
             {
                 Products = productList,
@@ -121,7 +167,6 @@ namespace SeaOfShops.DbInitializer
                 {
                     product1, product4, product5
                 };
-
             Order order3 = new Order()
             {
                 Products = productList,
@@ -133,7 +178,6 @@ namespace SeaOfShops.DbInitializer
                 {
                     product2, product5, product3, product1, product4
                 };
-
             Order order4 = new Order()
             {
                 Products = productList,
@@ -145,7 +189,6 @@ namespace SeaOfShops.DbInitializer
                 {
                     product2, product1, product3, product1, product4
                 };
-
             Order order5 = new Order()
             {
                 Products = productList,
