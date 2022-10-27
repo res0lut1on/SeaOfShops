@@ -8,7 +8,7 @@ using System.Data;
 
 namespace SeaOfShops.Controllers
 {
-   // [Authorize(Roles = AdminRole)]
+    [Authorize(Roles = AdminRole)]
     public class UsersController : Controller
     {
         private readonly ILogger _logger;

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,7 @@ using SeaOfShops.Models;
 
 namespace SeaOfShops.Controllers
 {
+    [Authorize(Roles = "admin" + "," + "courier")]
     public class OrderController : Controller
     {
         private readonly ApplicationContext _context;
@@ -18,7 +21,7 @@ namespace SeaOfShops.Controllers
         {
             _context = context;
         }
-
+        
         // GET: Order
         public async Task<IActionResult> Index()
         {;
@@ -47,12 +50,14 @@ namespace SeaOfShops.Controllers
             return View(order);
         }
 
+        [Authorize(Roles = "admin")]
         // GET: Order/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize(Roles = "admin")]
         // POST: Order/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -67,6 +72,7 @@ namespace SeaOfShops.Controllers
             return View(order);
         }
 
+        [Authorize(Roles = "admin")]
         // GET: Order/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -82,7 +88,7 @@ namespace SeaOfShops.Controllers
             }
             return View(order);
         }
-
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Complete(int? id)
         {
             if (id == null || _context.Orders == null)

@@ -7,7 +7,7 @@ using System.Data;
 
 namespace SeaOfShops.Controllers
 {
-    //[Authorize(Roles = AdminRole)]
+    [Authorize(Roles = AdminRole)]
     public class RolesController : Controller
     {
         RoleManager<IdentityRole> _roleManager;

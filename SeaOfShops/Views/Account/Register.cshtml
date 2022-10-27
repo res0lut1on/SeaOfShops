@@ -1,40 +1,51 @@
 ﻿@model SeaOfShops.ViewModels.RegisterViewModel
 
-<h2>Регистрация нового пользователя</h2>
 
-<form method="post" asp-controller="Account" asp-action="Register" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly"></div>
-    <div>
-        <label asp-for="Email"></label><br />
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
+
+<div class="position-relative overflow-hidden p-3 p-md-0 m-md-1 text-center">
+    <div class="col-md-5 p-lg-5 mx-auto my-5">
+        <h2>Register</h2>
+        <div class="d-flex justify-content-center align-items-center ">
+            <form method="post" asp-controller="Account" asp-action="Register" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div>
+                    <label asp-for="Email"></label><br />
+                    <input asp-for="Email" class="form-control mt-1" placeholder="Email" aria-label="Email" aria-describedby="basic-addon1" />
+                    <span asp-validation-for="Email"></span>
+                </div>
+                <div>
+                    <label asp-for="RealName"></label><br />
+                    <input asp-for="RealName" class="form-control mt-1" placeholder="Real Name" aria-label="RealName" aria-describedby="basic-addon1" />
+                    <span asp-validation-for="RealName"></span>
+                </div>
+                <div>
+                    <label asp-for="LastName"></label><br />
+                    <input asp-for="LastName" class="form-control mt-1" placeholder="Last Name" aria-label="LastName" aria-describedby="basic-addon1" />
+                    <span asp-validation-for="LastName"></span>
+                </div>
+                <div>
+                    <label asp-for="ImageFile"></label><br />
+                    <input asp-for="ImageFile" accept="image/*" class="form-control mt-1" />
+                    <span asp-validation-for="ImageFile"></span>
+                </div>
+                <div>
+                    <label asp-for="Password"></label><br />
+                    <input asp-for="Password" class="form-control mt-1" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" />
+                    <span asp-validation-for="Password"></span>
+                </div>
+                <div>
+                    <label asp-for="PasswordConfirm"></label><br />
+                    <input asp-for="PasswordConfirm" class="form-control mt-1" placeholder="Confrim Password" aria-label="PasswordConfrim" aria-describedby="basic-addon1" />
+                    <span asp-validation-for="PasswordConfirm"></span>
+                </div>
+                <div>
+                    <input type="submit" value="Регистрация" class="btn btn-outline-secondary mt-3" />
+                </div>
+            </form>
+        </div>
+        <p class="font-weight-normal">
+            Have account?
+            <a asp-action="Login" asp-controller="Account" class="btn btn-success mt-1">Register</a>
+        </p>
     </div>
-    <div>
-        <label asp-for="RealName"></label><br />
-        <input asp-for="RealName" />
-        <span asp-validation-for="RealName"></span>
-    </div>
-    <div>
-        <label asp-for="LastName"></label><br />
-        <input asp-for="LastName" />
-        <span asp-validation-for="LastName"></span>
-    </div>
-    <div>
-        <label asp-for="ImageFile"></label><br />
-        <input asp-for="ImageFile" accept="image/*" />
-        <span asp-validation-for="ImageFile"></span>
-    </div>
-    <div>
-        <label asp-for="Password"></label><br />
-        <input asp-for="Password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-    <div>
-        <label asp-for="PasswordConfirm"></label><br />
-        <input asp-for="PasswordConfirm" />
-        <span asp-validation-for="PasswordConfirm"></span>
-    </div>
-    <div>
-        <input type="submit" value="Регистрация" />
-    </div>
-</form>
+</div>
