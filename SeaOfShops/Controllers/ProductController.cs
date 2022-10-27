@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +12,11 @@ using SeaOfShops.Models;
 
 namespace SeaOfShops.Controllers
 {
-    //[Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin")]
     public class ProductController : Controller
     {
         private readonly ApplicationContext _context;
-        private int pageSize = 4;
+        private int pageSize = 6;
         public ProductController(ApplicationContext context)
         {
             _context = context;
@@ -182,7 +184,7 @@ namespace SeaOfShops.Controllers
         }
 
         //
-        // 
+        // Вариант CRUD с одной страницей
         // GET: Transaction/AddOrEdit
         public IActionResult AddOrEdit(int id = 0)
         {

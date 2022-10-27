@@ -108,9 +108,8 @@ namespace SeaOfShops.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "admin")]
         // POST: Order/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("OrderId,Price,Сompleted")] Order order)
@@ -143,6 +142,7 @@ namespace SeaOfShops.Controllers
             return View(order);
         }
 
+        [Authorize(Roles = "admin")]
         // GET: Order/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -161,6 +161,7 @@ namespace SeaOfShops.Controllers
             return View(order);
         }
 
+        [Authorize(Roles = "admin")]
         // POST: Order/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

@@ -16,3 +16,15 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.list-group {
+    max-height: 150px;
+    margin-bottom: 10px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+ul {
+    text-align: center;
+    list-style: inside;
+}

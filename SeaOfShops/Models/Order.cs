@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SeaOfShops.Models
 {
@@ -11,5 +12,13 @@ namespace SeaOfShops.Models
 		public bool Сompleted { get; set; }
 		[DisplayName("List of products")]
 		public List<Product> Products { get; set; }
-	}
+        [NotMapped]
+        public string? PriceWithProc
+        {
+            get
+            {
+                return Price.ToString() + "$";
+            }
+        }
+    }
 }

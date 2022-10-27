@@ -40,24 +40,35 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Price)
+                @Html.DisplayFor(modelItem => item.PriceWithProc)
             </td>
-            <td>
-                @foreach (var products in item.Products)
-                {
-                    <a>@(products.ProductName)</a>
-                }
+                <td>
+                    <ol type="A" class="list-group">
+                        @foreach (var products in item.Products)
+                        {
+                            <li class="list-group-item" style="background-color:aliceblue;border:hidden">@(products.ProductName)</li>
+                        }
+                    </ol>
             </td>
+            @if(item.Сompleted)
+            {
+                <td class="table-info">
+                    @Html.DisplayFor(modelItem => item.Сompleted)                                            
+                </td>
+            }
+            else
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.Сompleted)
+                </td> 
+            }                
             <td>
-                @Html.DisplayFor(modelItem => item.Сompleted)                                            
-            </td>
-            <td>
-                    <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-info">Details</a> |
+                    <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-info">Details</a> 
                 @if (this.User.IsInRole("admin"))
                 {
                     <a asp-action="Complete" asp-route-id="@item.OrderId"  class="btn btn-success">Complete</a>
-                        <a asp-action="Edit" asp-route-id="@item.OrderId" class="btn btn-outline-dark">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.OrderId" class="btn btn-danger">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.OrderId" class="btn btn-outline-dark">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.OrderId" class="btn btn-danger">Delete</a>
                 }
             </td>
         </tr>
