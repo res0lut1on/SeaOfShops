@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1 class="text-center display-4">Details</h1>
 
 <div>
     <h4>Product</h4>
@@ -21,13 +21,13 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Color)
-        </dd>
+        </dd>@*
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.IsDeleted)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.IsDeleted)
-        </dd>
+        </dd>*@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
         </dt>
@@ -40,9 +40,21 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Shop.ShopName)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Shop.StoreAddress)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Shop.StoreAddress)
+        </dd>
+        <dt class="col-sm-2">
+            Store Administrator
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Shop.User.Email)
+        </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.ProductId" class="btn btn-dark">Edit</a> |
+    <a asp-action="Index" class="btn btn-info">Back to List</a>
 </div>

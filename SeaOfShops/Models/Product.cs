@@ -23,11 +23,13 @@ namespace SeaOfShops.Models
         /// В таблице Product, хранить ссылки на заказы с many to many, 
         /// А выводить в общий список продукты с таблицы Store с _context.ProductInStores.Where( p => p.IsAvaible == true)
         /// Но так как здесь не полноценный функционал, обошелся с добавлением свойства доступности в самой таблице Product
+        /// 
+        /// Заказы оставил с каскадным удалением для (заказчика) пользователя
         /// </summary>
         [Required]
         public bool IsDeleted { get; set; } = false;
         public int Price { get; set; }
-        public int ShopId { get; set; }
+        public int? ShopId { get; set; }
         public Shop? Shop { get; set; }
         public List<Order>? Orders { get; set; }
 

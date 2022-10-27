@@ -18,7 +18,7 @@ namespace SeaOfShops.Data
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.LogTo(logStream.WriteLine, LogLevel.Debug);
+            //optionsBuilder.LogTo(logStream.WriteLine, LogLevel.Debug);
         }
         public override void Dispose()
         {

@@ -25,7 +25,10 @@ namespace SeaOfShops.Controllers
         // GET: Order
         public async Task<IActionResult> Index()
         {;
-            var orders = await _context.Orders.Include(p => p.Products).ToListAsync();
+            var orders = await _context.Orders
+                .Include(p => p.Owner)
+                .Include(p => p.Products)
+                .ToListAsync();
 
             var sortOrders = orders.OrderBy(p => p.Сompleted == true);
             return View(sortOrders);
@@ -41,6 +44,8 @@ namespace SeaOfShops.Controllers
             }
 
             var order = await _context.Orders
+                .Include(p => p.Products)
+                .Include(p => p.Owner)
                 .FirstOrDefaultAsync(m => m.OrderId == id);
             if (order == null)
             {
@@ -86,6 +91,9 @@ namespace SeaOfShops.Controllers
             {
                 return NotFound();
             }
+            var _owner = await _context.Users.FindAsync(order.UserId);
+            _owner = await _context.Users.FindAsync(order.Owner);
+            await _context.Entry(order).Collection(p => p.Products).LoadAsync();
             return View(order);
         }
         [Authorize(Roles = "admin")]

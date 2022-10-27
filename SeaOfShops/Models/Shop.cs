@@ -17,9 +17,11 @@ namespace SeaOfShops.Models
 
         [DisplayName("Store Address")]
         [Column(TypeName = "nvarchar(50)")]
+        [Required(ErrorMessage = "Store address is required.")]
         public string StoreAddress { get; set; }
         public List<Product> Products { get; set; } = new();
         public string UserId { get; set; }
-        public User? User { get; set; }
+        [DisplayName("Store Administrator")]
+        public User User { get; set; }
     }
 }

@@ -13,13 +13,15 @@ namespace SeaOfShops.Controllers
     {
         private readonly ILogger _logger;
         private UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly IWebHostEnvironment _hostEnvironment;
         private const string AdminRole = "admin";
        
-        public UsersController(UserManager<User> userManager, IWebHostEnvironment hostEnvironment, ILoggerFactory logger)
+        public UsersController(UserManager<User> userManager, IWebHostEnvironment hostEnvironment, ILoggerFactory logger, SignInManager<User> signInManager)
         {
             _logger = logger.CreateLogger("MyUsers");
             _userManager = userManager;
+            _signInManager = signInManager;
             this._hostEnvironment = hostEnvironment;
         }
         public void OnGet()
@@ -166,6 +168,10 @@ namespace SeaOfShops.Controllers
         public async Task<ActionResult> Delete(string id)
         {
             User user = await _userManager.FindByIdAsync(id);
+            if(this.User.Identity.Name == user.Email)
+            {
+                await _signInManager.SignOutAsync();
+            }
             if (user != null)
             {
                 IdentityResult result = await _userManager.DeleteAsync(user);

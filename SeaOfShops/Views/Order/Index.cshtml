@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    string tableinfo = "table-info";
 }
 
 
@@ -31,39 +32,44 @@
                 @Html.DisplayNameFor(model => model.Products)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Сompleted)
+                @Html.DisplayNameFor(model => model.Owner.UserAddress)
             </th>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Сompleted)
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PriceWithProc)
-            </td>
-                <td>
-                    <ol type="A" class="list-group">
-                        @foreach (var products in item.Products)
-                        {
-                            <li class="list-group-item" style="background-color:aliceblue;border:hidden">@(products.ProductName)</li>
-                        }
-                    </ol>
-            </td>
-            @if(item.Сompleted)
+            @if (item.Сompleted)
             {
-                <td class="table-info">
-                    @Html.DisplayFor(modelItem => item.Сompleted)                                            
-                </td>
+                @(tableinfo = "table-info")
             }
             else
             {
-                <td>
-                    @Html.DisplayFor(modelItem => item.Сompleted)
-                </td> 
-            }                
+                @(tableinfo = "")
+            }
+        <tr class="@tableinfo">
             <td>
-                    <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-info">Details</a> 
+                @Html.DisplayFor(modelItem => item.PriceWithProc)
+            </td>
+            <td>
+                <ol type="A" class="list-group">
+                    @foreach (var products in item.Products)
+                    {
+                        <li class="list-group-item" style="background-color:aliceblue;border:hidden">@(products.ProductName)</li>
+                    }
+                </ol>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Owner.UserAddress)
+            </td>            
+            <td>
+                @Html.DisplayFor(modelItem => item.Сompleted)
+            </td>                          
+            <td>
+                <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-info">Details</a> 
                 @if (this.User.IsInRole("admin"))
                 {
                     <a asp-action="Complete" asp-route-id="@item.OrderId"  class="btn btn-success">Complete</a>

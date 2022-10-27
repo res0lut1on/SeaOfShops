@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -51,7 +46,8 @@ namespace SeaOfShops.Controllers
             }
 
             var product = await _context.Products
-                .Include(p => p.Shop)
+                .Include(p => p.Shop)      // Select с Магазинами
+                .ThenInclude(p => p.User)  // Владельц Магазина
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {
@@ -171,7 +167,7 @@ namespace SeaOfShops.Controllers
                 if (orders.FirstOrDefault(p => p.Products.FirstOrDefault(c => c.ProductId == product.ProductId) is not null) is not null) // если продукт есть хотя бы в одном заказе
                 {
                     product.IsDeleted = true; // помечаю, что не нужно выводить его в главном списке
-                    ViewBag.CountProducts--;
+                    ViewBag.CountProducts =  _context.Products.Count() - 1;
                 }
                 else
                 {
