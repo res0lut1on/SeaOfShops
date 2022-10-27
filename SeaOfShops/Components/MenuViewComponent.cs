@@ -17,7 +17,7 @@ namespace SeaOfShops.Components
             {
                 foreach (var item in items)
                 {
-                    item.Active = "disabled";
+                    item.Active = "";
                 }
                 var controller = Request.RouteValues["Controller"].ToString();
                 foreach (var item in items)

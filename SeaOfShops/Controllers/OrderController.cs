@@ -24,7 +24,7 @@ namespace SeaOfShops.Controllers
         {;
             var orders = await _context.Orders.Include(p => p.Products).ToListAsync();
 
-            var sortOrders = orders.OrderBy(p => p.Сompleted == true).Reverse();
+            var sortOrders = orders.OrderBy(p => p.Сompleted == true);
             return View(sortOrders);
             //return View(await _context.Orders.ToListAsync());
         }
