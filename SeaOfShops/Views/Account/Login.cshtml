@@ -1,24 +1,36 @@
 ﻿@model SeaOfShops.ViewModels.LoginViewModel
 
-<h2>Вход в приложение</h2>
-<form method="post" asp-controller="Account" asp-action="Login"
-      asp-route-returnUrl="@Model.ReturnUrl">
-    <div asp-validation-summary="ModelOnly"></div>
-    <div>
-        <label asp-for="Email"></label><br />
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
+
+
+<div class="position-relative overflow-hidden p-3 p-md-0 m-md-1 text-center">
+    <div class="col-md-5 p-lg-5 mx-auto my-5">
+        <h2>Login</h2>
+        <div class="d-flex justify-content-center align-items-center ">
+            <form method="post" asp-controller="Account" asp-action="Login"
+              asp-route-returnUrl="@Model.ReturnUrl">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="mt-2">
+                    <label asp-for="Email"></label><br />
+                    <input asp-for="Email" class="form-control mt-1" placeholder="Email" aria-label="Email" aria-describedby="basic-addon1" />
+                    <span asp-validation-for="Email"></span>
+                </div>
+                <div class="mt-2">
+                    <label asp-for="Password"></label><br />
+                    <input asp-for="Password" class="form-control mt-1" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" />
+                    <span asp-validation-for="Password"></span>
+                </div>
+                <div class="mt-2">
+                    <label asp-for="RememberMe"></label>
+                    <input asp-for="RememberMe" class="form-check-input"/>
+                </div>
+                    <div class="mt-2">
+                    <input type="submit" value="Войти" class="btn btn-outline-secondary mt-3" />
+                </div>
+            </form>
+        </div>
+        <p class="font-weight-normal">
+            Don't have account?
+            <a asp-action="Register" asp-controller="Account" class="btn btn-success mt-1">Register</a>
+        </p>
     </div>
-    <div>
-        <label asp-for="Password"></label><br />
-        <input asp-for="Password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-    <div>
-        <label asp-for="RememberMe"></label><br />
-        <input asp-for="RememberMe" />
-    </div>
-    <div>
-        <input type="submit" value="Войти" />
-    </div>
-</form>
+</div>
