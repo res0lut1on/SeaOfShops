@@ -169,6 +169,7 @@ namespace SeaOfShops.Controllers
                 if (orders.FirstOrDefault(p => p.Products.FirstOrDefault(c => c.ProductId == product.ProductId) is not null) is not null) // если продукт есть хотя бы в одном заказе
                 {
                     product.IsDeleted = true; // помечаю, что не нужно выводить его в главном списке
+                    ViewBag.CountProducts--;
                 }
                 else
                 {

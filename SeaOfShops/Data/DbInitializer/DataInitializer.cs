@@ -98,18 +98,62 @@ namespace SeaOfShops.DbInitializer
                     product1, product4
                 };
 
-            Order order = new Order()
+            Order order1 = new Order()
             {
                 Products = productList,
                 Price = productList.Sum(p => p.Price),
                 Сompleted = false
             };
-            context.Orders.Add(order);
-            context.SaveChanges();
 
-            product1.Orders.Add(order);
-            product4.Orders.Add(order);
+            productList = new List<Product>()
+                {
+                    product2, product4
+                };
 
+            Order order2 = new Order()
+            {
+                Products = productList,
+                Price = productList.Sum(p => p.Price),
+                Сompleted = false
+            };
+
+            productList = new List<Product>()
+                {
+                    product1, product4, product5
+                };
+
+            Order order3 = new Order()
+            {
+                Products = productList,
+                Price = productList.Sum(p => p.Price),
+                Сompleted = true
+            };
+
+            productList = new List<Product>()
+                {
+                    product2, product5, product3, product1, product4
+                };
+
+            Order order4 = new Order()
+            {
+                Products = productList,
+                Price = productList.Sum(p => p.Price),
+                Сompleted = false
+            };
+
+            productList = new List<Product>()
+                {
+                    product2, product1, product3, product1, product4
+                };
+
+            Order order5 = new Order()
+            {
+                Products = productList,
+                Price = productList.Sum(p => p.Price),
+                Сompleted = true
+            };
+
+            context.Orders.AddRange(order1, order2, order3, order4, order5);
             context.SaveChanges();
         }
     }   

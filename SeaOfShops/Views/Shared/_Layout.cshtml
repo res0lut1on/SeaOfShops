@@ -20,22 +20,53 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">List of all products</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">List of all orders</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+            <div class="container navbar-collapse">
+                <a class="navbar-brand mb-0"
+                   href="#">
+                    <img class="d-inline-block align-top"
+                         src="~/Images/timeismoney.jpg"
+                         width="30" height="30">
+                    Sea Of Shops
+                </a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="collapse navbar-collapse"
+                     id="navbarNav">
+                        @await Component.InvokeAsync("Menu")
+                    </div>
+                    @await Html.PartialAsync("_UserPartial")
+                }
+                else
+                {
+                    <ul class="navbar-nav" id="navbarNav">
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-controller="Account" asp-action="Login">Вход</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-controller="Account" asp-action="Register">Зарегистрироваться</a>
+                        </li>
+                    </ul>
+                }
+            </div>
+        </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <div style="background-color:aliceblue">
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
     </div>
-
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2022 - SeaOfShops - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>

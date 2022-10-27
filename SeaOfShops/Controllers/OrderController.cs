@@ -21,11 +21,11 @@ namespace SeaOfShops.Controllers
 
         // GET: Order
         public async Task<IActionResult> Index()
-        {
-            //ViewBag.ListOfProduct = _context.Products.Include(p => p.Orders).ToList();
-            ViewBag.ListOfProduct = _context.Orders.Include(p => p.Products).ToList();
+        {;
             var orders = await _context.Orders.Include(p => p.Products).ToListAsync();
-            return View(orders);
+
+            var sortOrders = orders.OrderBy(p => p.Сompleted == true).Reverse();
+            return View(sortOrders);
             //return View(await _context.Orders.ToListAsync());
         }
 
@@ -81,6 +81,25 @@ namespace SeaOfShops.Controllers
                 return NotFound();
             }
             return View(order);
+        }
+
+        public async Task<IActionResult> Complete(int? id)
+        {
+            if (id == null || _context.Orders == null)
+            {
+                return NotFound();
+            }
+
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            order.Сompleted = true;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: Order/Edit/5
