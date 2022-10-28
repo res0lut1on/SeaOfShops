@@ -2,9 +2,17 @@
 
 namespace SeaOfShops.Services
 {
-    public static class LinqHelper
+    public static class LinqHelper 
     {
-        public static IQueryable<TEntity> OrderBy<TEntity>(this IQueryable<TEntity> source, string orderByProperty,
+        public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string property)
+        {
+            return (IOrderedQueryable<T>)OrderBy<T>(source, property, true);
+        }
+        public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> source, string property)
+        {
+            return (IOrderedQueryable<T>)OrderBy<T>(source, property, false);
+        }
+        static IQueryable<TEntity> OrderBy<TEntity>(this IQueryable<TEntity> source, string orderByProperty,
                           bool desc)
         {
             string command = desc ? "OrderByDescending" : "OrderBy";

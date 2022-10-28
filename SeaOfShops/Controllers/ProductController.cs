@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using SeaOfShops.Data;
+using SeaOfShops.Filters;
 using SeaOfShops.Models;
 
 namespace SeaOfShops.Controllers
@@ -41,17 +42,18 @@ namespace SeaOfShops.Controllers
         }
 
         // GET: Products/Details/5
+        [SimpleResourceFilter(30, "123")]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Products == null)
+            /*if (id == null || _context.Products == null)
             {
                 return NotFound();
-            }
+            }*/
 
             Product product = null; /*await _context.Products
                 .Include(p => p.Shop)      // Select с Магазинами
                 .ThenInclude(p => p.User)  // Владельц Магазина
-                .FirstOrDefaultAsync(m => m.ProductId == id);*/
+                .FirstOrDefaultAsync(m => m.Id == id);*/
 
             /*if (product == null)
             {
@@ -63,10 +65,11 @@ namespace SeaOfShops.Controllers
                 product = await _context.Products
                     .Include(p => p.Shop)      
                 .ThenInclude(p => p.User)
-                    .FirstOrDefaultAsync(p => p.ProductId == id);
+                    .FirstOrDefaultAsync(p => p.Id == id) ?? throw new ArgumentNullException(nameof(product));
+
                 if (product != null)
                 {
-                    cache.Set(product.ProductId, product,
+                    cache.Set(product.Id, product,
                     new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
                 }
                 else
@@ -74,7 +77,7 @@ namespace SeaOfShops.Controllers
                     return NotFound();
                 }    
             }
-
+            
             return View(product);
         }
 
@@ -87,7 +90,7 @@ namespace SeaOfShops.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,ProductName,Color,IsDeleted,Price,ShopId")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,ProductName,Color,IsDeleted,Price,ShopId")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +98,7 @@ namespace SeaOfShops.Controllers
                 int n = await _context.SaveChangesAsync();
                 if(n > 0)
                 {
-                    cache.Set(product.ProductId, product, new MemoryCacheEntryOptions
+                    cache.Set(product.Id, product, new MemoryCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
                     });
@@ -123,14 +126,10 @@ namespace SeaOfShops.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,Color,IsDeleted,Price,ShopId")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ProductName,Color,IsDeleted,Price,ShopId")] Product product)
         {
-            if (id != product.ProductId)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
@@ -140,7 +139,7 @@ namespace SeaOfShops.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.ProductId))
+                    if (!ProductExists(product.Id))
                     {
                         return NotFound();
                     }
@@ -151,12 +150,12 @@ namespace SeaOfShops.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ShopId"] = new SelectList(_context.Shops, "ShopId", "ShopName", product.ShopId);
+            ViewData["ShopId"] = new SelectList(_context.Shops, "ShopId", "ShopName", product.ShopId);////////////////////////////
             return View(product);
         }
         private bool ProductExists(int id)
         {
-            return _context.Products.Any(e => e.ProductId == id);
+            return _context.Products.Any(e => e.Id == id);
         }
 
         // GET: Products/Delete/5
@@ -169,7 +168,7 @@ namespace SeaOfShops.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Shop)
-                .FirstOrDefaultAsync(m => m.ProductId == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
                 return NotFound();
@@ -193,7 +192,7 @@ namespace SeaOfShops.Controllers
             {
                 var orders = _context.Orders.Include(p => p.Products).ToList();
 
-                if (orders.FirstOrDefault(p => p.Products.FirstOrDefault(c => c.ProductId == product.ProductId) is not null) is not null) // если продукт есть хотя бы в одном заказе
+                if (orders.FirstOrDefault(p => p.Products.FirstOrDefault(c => c.Id == product.Id) is not null) is not null) // если продукт есть хотя бы в одном заказе
                 {
                     product.IsDeleted = true; // помечаю, что не нужно выводить его в главном списке
                     ViewBag.CountProducts =  _context.Products.Count() - 1;
@@ -208,6 +207,7 @@ namespace SeaOfShops.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// 
         //
         // Вариант CRUD с одной страницей
         // GET: Transaction/AddOrEdit
@@ -227,7 +227,7 @@ namespace SeaOfShops.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (product.ProductId == 0)
+                if (product.Id == 0)
                     _context.Add(product);
                 else
                     _context.Update(product);

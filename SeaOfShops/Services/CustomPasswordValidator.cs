@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SeaOfShops.Models;
 using System.Text.RegularExpressions;
 
-namespace SeaOfShops.Models
+namespace SeaOfShops.Services
 {
     public class CustomPasswordValidator : IPasswordValidator<User>
     {
@@ -16,7 +17,7 @@ namespace SeaOfShops.Models
         {
             List<IdentityError> errors = new List<IdentityError>();
 
-            if (String.IsNullOrEmpty(password) || password.Length < RequiredLength)
+            if (string.IsNullOrEmpty(password) || password.Length < RequiredLength)
             {
                 errors.Add(new IdentityError
                 {

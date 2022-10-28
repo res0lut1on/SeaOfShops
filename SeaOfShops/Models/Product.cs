@@ -5,10 +5,10 @@ using System.ComponentModel;
 
 namespace SeaOfShops.Models
 {
-	public class Product
+	public class Product : IEntity
 	{
         [Key]
-        public int ProductId { get; set; }
+        public int Id { get; set; }
 
         [DisplayName("Product Name")]
         [Column(TypeName = "nvarchar(50)")]
@@ -28,6 +28,7 @@ namespace SeaOfShops.Models
         /// </summary>
         [Required]
         public bool IsDeleted { get; set; } = false;
+        [Range(1, int.MaxValue, ErrorMessage = "Price should be greater than 0.")]
         public int Price { get; set; }
         public int? ShopId { get; set; }
         public Shop? Shop { get; set; }

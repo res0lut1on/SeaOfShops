@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SeaOfShops.Models
 {
-	public class Order
-	{
+	public class Order : IEntity
+    {
 		[Key]
-		public int OrderId { get; set; }
+		public int Id { get; set; }
         [Required(ErrorMessage = "Price is required.")]
         public int Price { get; set; }
         [DisplayName("Owner")]

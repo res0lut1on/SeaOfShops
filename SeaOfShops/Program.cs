@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using SeaOfShops.Data;
 using SeaOfShops.DbInitializer;
 using SeaOfShops.DeflateCompressionProvider;
+using SeaOfShops.Filters;
 using SeaOfShops.Models;
 using SeaOfShops.Services;
 using System.IO.Compression;
@@ -24,13 +25,15 @@ builder.Services.AddTransient<IPasswordValidator<User>,
             CustomPasswordValidator>(serv => new CustomPasswordValidator(6));
 
 builder.Services.AddTransient<IUserValidator<User>, CustomUserValidator>();
-
+builder.Services.AddScoped<ValidationFilterAttribute>();  
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationContext>();
 
 builder.Services.AddOrderService();
 builder.Services.AddTimeService();
+builder.Services.AddScoped<IEAsyncFilterAttribute>();
+builder.Services.AddScoped<ValidateEntityExistsAttribute<Order>>();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
@@ -52,6 +55,8 @@ builder.Services.AddControllersWithViews(options =>
             Location = ResponseCacheLocation.None,
             NoStore = true
         });
+    options.Filters.Add(new CustomExceptionFilterAttribute());    
+    options.Filters.Add(typeof(CustomExceptionFilterAttribute));  
 });
 
 builder.Services.AddResponseCompression(options => 

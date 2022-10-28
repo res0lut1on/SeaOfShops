@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SeaOfShops.Filters;
 using SeaOfShops.Models;
 using System.Diagnostics;
 
@@ -14,11 +15,11 @@ namespace SeaOfShops.Controllers
             _logger = logger;
             _userManager = userManager;
         }
+        [DateTimeExecutionFilter]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult Index()
         {
             ViewBag.CountUsers = _userManager.Users.Count();
-            //Response.ContentType = "text/plain";
             return View();
         }
 

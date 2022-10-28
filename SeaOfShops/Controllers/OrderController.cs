@@ -65,7 +65,7 @@ namespace SeaOfShops.Controllers
         // POST: Order/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderId,Price,Сompleted")] Order order)
+        public async Task<IActionResult> Create([Bind("Id,Price,Сompleted")] Order order)
         {
             if (ModelState.IsValid)
             {
@@ -138,7 +138,7 @@ namespace SeaOfShops.Controllers
 
         private bool OrderExists(int id)
         {
-          return _context.Orders.Any(e => e.OrderId == id);
+          return _context.Orders.Any(e => e.Id == id);
         }
 
         /*[Authorize(Roles = "admin")]
@@ -164,9 +164,9 @@ namespace SeaOfShops.Controllers
         // POST: Order/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,Price,Сompleted")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Price,Сompleted")] Order order)
         {
-            if (id != order.OrderId)
+            if (id != order.Id)
             {
                 return NotFound();
             }
@@ -180,7 +180,7 @@ namespace SeaOfShops.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderExists(order.OrderId))
+                    if (!OrderExists(order.Id))
                     {
                         return NotFound();
                     }

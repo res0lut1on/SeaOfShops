@@ -69,12 +69,12 @@
                 @Html.DisplayFor(modelItem => item.Сompleted)
             </td>                          
             <td>
-                <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-info">Details</a> 
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a> 
                 @if (this.User.IsInRole("admin"))
                 {
-                    <a asp-action="Complete" asp-route-id="@item.OrderId"  class="btn btn-success">Complete</a>
-                    <a asp-action="Edit" asp-route-id="@item.OrderId" class="btn btn-outline-dark">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.OrderId" class="btn btn-danger">Delete</a>
+                    <a asp-action="Complete" asp-route-id="@item.Id"  class="btn btn-success">Complete</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-dark">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
                 }
             </td>
         </tr>

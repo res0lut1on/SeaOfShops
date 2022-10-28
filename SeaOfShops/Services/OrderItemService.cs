@@ -50,7 +50,7 @@ namespace SeaOfShops.Services
             var items = await _context.Orders
                 .Include(p => p.Owner)
                 .Include(p => p.Products)
-                .FirstOrDefaultAsync(p => p.OrderId == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
             return items;
         }
 

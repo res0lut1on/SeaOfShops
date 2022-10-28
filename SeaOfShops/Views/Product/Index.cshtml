@@ -24,9 +24,9 @@
                         <p><label asp-for="@item.Price" class="card-text">@item.PriceWithProc</label></p>
 
                         <div>
-                            <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-dark">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-dark">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-danger">Delete</a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-dark">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-dark">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
                         </div>
                     </div>
                 </div>

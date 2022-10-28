@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using SeaOfShops.Data;
+using SeaOfShops.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 
-namespace SeaOfShops.Models
+namespace SeaOfShops.Services
 {
     public class CustomUserValidator : IUserValidator<User>
     {
@@ -41,7 +42,7 @@ namespace SeaOfShops.Models
                     Description = "Пользователь с таким Email уже зарегистрирован"
                 });
             }*/
-            
+
             /*string pattern = @"\^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$\";
             if (!Regex.IsMatch(user.Email, pattern))
             {
