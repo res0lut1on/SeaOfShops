@@ -33,6 +33,7 @@ builder.Services.AddIdentity<User, IdentityRole>()
 builder.Services.AddOrderService();
 builder.Services.AddTimeService();
 builder.Services.AddScoped<IEAsyncFilterAttribute>();
+builder.Services.AddScoped<ValidateEntityExistsAttribute<Product>>();
 builder.Services.AddScoped<ValidateEntityExistsAttribute<Order>>();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>

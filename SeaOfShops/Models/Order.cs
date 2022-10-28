@@ -11,7 +11,7 @@ namespace SeaOfShops.Models
         [Required(ErrorMessage = "Price is required.")]
         public int Price { get; set; }
         [DisplayName("Owner")]
-        [Required(ErrorMessage = "Owner is required.")]
+        [Required(ErrorMessage = "Owner is required.")] 
         public User? Owner { get; set; }
         public int? UserId { get; set; }
 		public bool Сompleted { get; set; }

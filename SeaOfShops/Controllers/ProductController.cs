@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 using SeaOfShops.Data;
 using SeaOfShops.Filters;
 using SeaOfShops.Models;
+using SeaOfShops.Services;
 
 namespace SeaOfShops.Controllers
 {
@@ -13,54 +15,29 @@ namespace SeaOfShops.Controllers
     public class ProductController : Controller
     {
         private readonly ApplicationContext _context;
+        IOrderItemService<Order> _orderItemService;
         private IMemoryCache cache;
-        private int pageSize = 6;
-        public ProductController(ApplicationContext context, IMemoryCache memoryCache)
+        public ProductController(ApplicationContext context, IMemoryCache memoryCache, IOrderItemService<Order> orderItemService)
         {
             _context = context;
+            _orderItemService = orderItemService;
             cache = memoryCache;
         }
 
-        /*// GET: Products
+        // GET: Products
         public async Task<IActionResult> Index()
         {
-
             var applicationContext = _context.Products.Include(p => p.Shop);
             return View(await applicationContext.ToListAsync());
-        }*/
-
-        // GET: mini pagination 
-        public async Task<IActionResult> Index(int pageNo)
-        {
-            var products = await _context.Products.Include(t => t.Shop).ToListAsync();
-
-            ViewBag.CountProducts = Math.Ceiling(((double)products.Count() / (double)pageSize));
-
-            var collect = products.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-
-            return View(collect);
         }
 
-        // GET: Products/Details/5
-        [SimpleResourceFilter(30, "123")]
-        public async Task<IActionResult> Details(int? id)
+        // GET: Products/Details/5        
+        [ServiceFilter(typeof(ValidateEntityExistsAttribute<Product>))]
+        public IActionResult Details(int? id)
         {
-            /*if (id == null || _context.Products == null)
-            {
-                return NotFound();
-            }*/
 
-            Product product = null; /*await _context.Products
-                .Include(p => p.Shop)      // Select с Магазинами
-                .ThenInclude(p => p.User)  // Владельц Магазина
-                .FirstOrDefaultAsync(m => m.Id == id);*/
-
-            /*if (product == null)
-            {
-                return NotFound();
-            }*/
-
-            if (!cache.TryGetValue(id, out product))
+            Product? product = null; 
+            /*if (!cache.TryGetValue(id, out product))
             {
                 product = await _context.Products
                     .Include(p => p.Shop)      
@@ -76,8 +53,9 @@ namespace SeaOfShops.Controllers
                 {
                     return NotFound();
                 }    
-            }
-            
+            }*/
+
+            product = HttpContext.Items["entity"] as Product;
             return View(product);
         }
 
@@ -89,38 +67,25 @@ namespace SeaOfShops.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,ProductName,Color,IsDeleted,Price,ShopId")] Product product)
         {
-            if (ModelState.IsValid)
+            _context.Add(product);
+            int n = await _context.SaveChangesAsync();
+            if(n > 0)
             {
-                _context.Add(product);
-                int n = await _context.SaveChangesAsync();
-                if(n > 0)
+                cache.Set(product.Id, product, new MemoryCacheEntryOptions
                 {
-                    cache.Set(product.Id, product, new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
-                    });
-                }
-
-                return RedirectToAction(nameof(Index));
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+                });
             }
-            ViewData["ShopId"] = new SelectList(_context.Shops, "ShopId", "ShopName", product.ShopId);
-            return View(product);
+            return RedirectToAction(nameof(Index));                               
         }
-        public async Task<IActionResult> Edit(int? id)
+        [ServiceFilter(typeof(ValidateEntityExistsAttribute<Product>))]
+        public IActionResult Edit(int? id)
         {
-            if (id == null || _context.Products == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+            var product = HttpContext.Items["entity"] as Product;
             ViewData["ShopId"] = new SelectList(_context.Shops, "ShopId", "ShopName", product.ShopId);
             return View(product);
         }
@@ -130,28 +95,23 @@ namespace SeaOfShops.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,ProductName,Color,IsDeleted,Price,ShopId")] Product product)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(product);
+                await _context.SaveChangesAsync();
             }
-            ViewData["ShopId"] = new SelectList(_context.Shops, "ShopId", "ShopName", product.ShopId);////////////////////////////
-            return View(product);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductExists(product.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));            
         }
         private bool ProductExists(int id)
         {
@@ -159,55 +119,49 @@ namespace SeaOfShops.Controllers
         }
 
         // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [ServiceFilter(typeof(ValidateEntityExistsAttribute<Product>))]
+        public IActionResult Delete(int? id)
         {
-            if (id == null || _context.Products == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products
-                .Include(p => p.Shop)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
+            var product = HttpContext.Items["entity"] as Product;
             return View(product);
         }
 
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
+        [ServiceFilter(typeof(ValidateEntityExistsAttribute<Product>))]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Products == null)
-            {
-                return Problem("Entity set 'ApplicationContext.Products'  is null.");
-            }
-            var product = await _context.Products.FindAsync(id);
+            var product = HttpContext.Items["entity"] as Product;
 
             if (product != null)
             {
-                var orders = _context.Orders.Include(p => p.Products).ToList();
-
+                //var orders = _context.Orders.Include(p => p.Products).ToList();
+                var orders = await _orderItemService.GetAllItemsAsync();
                 if (orders.FirstOrDefault(p => p.Products.FirstOrDefault(c => c.Id == product.Id) is not null) is not null) // если продукт есть хотя бы в одном заказе
                 {
-                    product.IsDeleted = true; // помечаю, что не нужно выводить его в главном списке
+                    //product.IsDeleted = true; 
+                    var a = _context.Products.FirstOrDefault(p => p.Id == product.Id);
+                    a.IsDeleted = true;                                                                                     // помечаю, что не нужно выводить его в главном списке
+                    _context.Products.Update(a);
                     ViewBag.CountProducts =  _context.Products.Count() - 1;
                 }
                 else
                 {
-                    _context.Products.Remove(product); // иначе удаляю
+                    _context.Products.Remove(product);                                                                      // иначе удаляю
                 }
-            }
-
-            await _context.SaveChangesAsync();
+            }            
+            _context.SaveChanges();
+            
             return RedirectToAction(nameof(Index));
         }
 
-        /// 
+        //
+        //
+        //
+        //
+        //
+        // 
         //
         // Вариант CRUD с одной страницей
         // GET: Transaction/AddOrEdit
@@ -239,6 +193,7 @@ namespace SeaOfShops.Controllers
             return View(product);
         }        
 
+
         [NonAction]
         public void PopulateShops() // вариант SelectList со значением по умолчанию
         {
@@ -248,5 +203,18 @@ namespace SeaOfShops.Controllers
             ViewBag.Shops = ShopCollection;
             ViewData["ShopId"] = new SelectList(ShopCollection, "ShopId", "ShopName", DefaultCategory);
         }
+        
+        // GET: mini pagination 
+        /*public async Task<IActionResult> Index(int pageNo)
+        {
+            int pageSize = 6;
+            var products = await _context.Products.Include(t => t.Shop).ToListAsync();
+
+            ViewBag.CountProducts = Math.Ceiling(((double)products.Count() / (double)pageSize));
+
+            var collect = products.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+
+            return View(collect);
+        }*/
     }
 }

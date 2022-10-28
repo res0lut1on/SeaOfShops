@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SeaOfShops.Data;
+using SeaOfShops.Filters;
 using SeaOfShops.Models;
 using SeaOfShops.Services;
 
@@ -37,21 +38,19 @@ namespace SeaOfShops.Controllers
         }
 
         // GET: Order/Details/5
+        //[ServiceFilter(typeof(ValidateEntityExistsAttribute<Order>))]
+        [ServiceFilter(typeof(ValidateEntityExistsAttribute<Order>))]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Orders == null)
-            {
-                return NotFound();
-            }
-
             var order = await _orderItemService.GetByIdItemsAsync((int)id);
 
             if (order == null)
             {
                 return NotFound();
             }
-
+            
             return View(order);
+
         }
 
         [Authorize(Roles = "admin")]
@@ -65,16 +64,12 @@ namespace SeaOfShops.Controllers
         // POST: Order/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Create([Bind("Id,Price,Сompleted")] Order order)
         {
-            if (ModelState.IsValid)
-            {
-                //_context.Add(order);
-                await _orderItemService.AddItemsAsync(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(order);
+            await _orderItemService.AddItemsAsync(order);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize(Roles = "admin")]

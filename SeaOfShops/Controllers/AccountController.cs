@@ -68,7 +68,7 @@ namespace SeaOfShops.Controllers
             return View(model);
         }
         [HttpGet]
-        public IActionResult Login(string returnUrl = null)
+        public IActionResult Login(string? returnUrl = null)
         {
             return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
@@ -82,8 +82,7 @@ namespace SeaOfShops.Controllers
                 var result =
                     await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
-                {
-                    // проверяем, принадлежит ли URL приложению
+                {                   
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
                         return Redirect(model.ReturnUrl);
@@ -104,8 +103,7 @@ namespace SeaOfShops.Controllers
         //[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
-        {
-            // удаляем аутентификационные куки
+        {            
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }

@@ -34,10 +34,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.Owner.UserAddress)
             </th>
+            <th>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Сompleted)
-            <th></th>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -73,7 +74,7 @@
                 @if (this.User.IsInRole("admin"))
                 {
                     <a asp-action="Complete" asp-route-id="@item.Id"  class="btn btn-success">Complete</a>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-dark">Edit</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-dark disabled">Edit</a>
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
                 }
             </td>

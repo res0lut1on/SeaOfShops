@@ -17,7 +17,7 @@ namespace SeaOfShops.Services
         {
             string command = desc ? "OrderByDescending" : "OrderBy";
             var type = typeof(TEntity);
-            var property = type.GetProperty(orderByProperty);
+            var property = type.GetProperty(orderByProperty) ?? throw new Exception("o_0");
             var parameter = Expression.Parameter(type, "p");
             var propertyAccess = Expression.MakeMemberAccess(parameter, property);
             var orderByExpression = Expression.Lambda(propertyAccess, parameter);
