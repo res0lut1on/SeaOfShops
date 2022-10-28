@@ -16,8 +16,9 @@ namespace SeaOfShops.Models
         [DisplayName("User Address")]
         [Column(TypeName = "nvarchar(100)")]
         public string? UserAddress { get; set; }
+        // есть еще вариант с сохранением картинки в таблице через byte []
         [Column(TypeName = "nvarchar(100)")]
-        public string? ImageName { get; set; }
+        public string ImageName { get; set; } = "";
 
 
         [NotMapped]

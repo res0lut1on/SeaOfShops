@@ -1,10 +1,15 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+/*using Microsoft.IdentityModel.Tokens;*/
 using SeaOfShops.Data;
 using SeaOfShops.DbInitializer;
+using SeaOfShops.DeflateCompressionProvider;
 using SeaOfShops.Models;
+using System.IO.Compression;
 using WEB_3505_MIK;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +33,45 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection"));
 });
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddMemoryCache();
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.CacheProfiles.Add("Caching",
+        new CacheProfile()
+        {
+            Duration = 300
+        });
+    options.CacheProfiles.Add("NoCaching",
+        new CacheProfile()
+        {
+            Location = ResponseCacheLocation.None,
+            NoStore = true
+        });
+});
+
+builder.Services.AddResponseCompression(options => 
+{
+    options.EnableForHttps = true;
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+    {
+        "image/svg+xml",
+    });
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+    options.Providers.Add(new DeflateCompressionProvider());
+});
+
+builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
+{
+    options.Level = CompressionLevel.Optimal;    
+});
+
+builder.Services.Configure<GzipCompressionProviderOptions>(options => // если клиент не поддерживает сжатие в формат Brotli
+{
+    options.Level = CompressionLevel.Optimal;
+});
+
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
@@ -43,7 +86,13 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions()
+{
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Add("Cache-Control", "public,max-age=600");
+    }
+});
 
 app.UseRouting();
 
@@ -53,6 +102,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseResponseCompression();
 
 using (var scope = app.Services.CreateScope())
 {

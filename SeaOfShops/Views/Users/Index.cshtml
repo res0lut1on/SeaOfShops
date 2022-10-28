@@ -4,7 +4,6 @@
     ViewBag.Title = "Список пользователей";
 }
 
-<a asp-action="Create">Добавить пользователя</a>
 
 <table class="table">
     <tr>
@@ -19,7 +18,7 @@
             <td>@user.Email</td>
             <td>@user.RealName</td>
             <td>@user.LastName</td>
-            @if (user.ImageName != "niko.jpg")
+            @if (user.ImageName != "")
             {
                 <td>@await Component.InvokeAsync("Avatar", user.Email)</td>
             }else
@@ -39,3 +38,4 @@
     }
 </table>
 
+<a asp-action="Create" class="btn btn-dark m-3">Добавить пользователя</a>

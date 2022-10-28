@@ -29,7 +29,7 @@
                         {
                             @await Component.InvokeAsync("Menu")
                         }
-                        else
+                        else if(this.User.IsInRole("courier"))
                         {
                             <ul class="navbar-nav">
                                 <li class="nav-item">

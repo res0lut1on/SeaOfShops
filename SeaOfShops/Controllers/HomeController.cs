@@ -14,10 +14,11 @@ namespace SeaOfShops.Controllers
             _logger = logger;
             _userManager = userManager;
         }
-
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult Index()
         {
             ViewBag.CountUsers = _userManager.Users.Count();
+            //Response.ContentType = "text/plain";
             return View();
         }
 

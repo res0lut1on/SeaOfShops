@@ -94,7 +94,6 @@ namespace SeaOfShops.Controllers
         public async Task<IActionResult> Edit(EditUserViewModel model)
         {
             var ss = model.ImageFile;
-            var s1 = model.ImageName;
              
             if (ModelState.IsValid)
             {
@@ -137,6 +136,21 @@ namespace SeaOfShops.Controllers
                         await model.ImageFile.CopyToAsync(fileStream);
                     }
                 }
+                /*else // удаления аватара без добавления
+                {
+                    // delete old avatar
+                    string wwwRootPath = _hostEnvironment.WebRootPath;
+                    var fileName = "";
+                    fileName = model.ImageName;
+
+                    var fullPath = wwwRootPath + "/Images/" + model.ImageName;
+
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                        ViewBag.deleteSuccess = "true";
+                    }
+                }*/
 
                 User user = await _userManager.FindByIdAsync(model.Id);
                 if (user != null)

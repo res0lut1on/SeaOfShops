@@ -25,6 +25,8 @@ namespace SeaOfShops.ViewModels
         [DataType(DataType.Password)]
         [Display(Name = "Подтверждаем пароль")]
         public string PasswordConfirm { get; set; }
+        [DisplayName("Image Name")]
+        public string? ImageName { get; set; }
 
         [DisplayName("Upload File")]
         public IFormFile? ImageFile { get; set; }

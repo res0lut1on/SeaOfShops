@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using SeaOfShops.Data;
 using SeaOfShops.Models;
 
@@ -11,10 +12,12 @@ namespace SeaOfShops.Controllers
     public class ProductController : Controller
     {
         private readonly ApplicationContext _context;
+        private IMemoryCache cache;
         private int pageSize = 6;
-        public ProductController(ApplicationContext context)
+        public ProductController(ApplicationContext context, IMemoryCache memoryCache)
         {
             _context = context;
+            cache = memoryCache;
         }
 
         /*// GET: Products
@@ -45,13 +48,31 @@ namespace SeaOfShops.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
+            Product product = null; /*await _context.Products
                 .Include(p => p.Shop)      // Select с Магазинами
                 .ThenInclude(p => p.User)  // Владельц Магазина
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
+                .FirstOrDefaultAsync(m => m.ProductId == id);*/
+
+            /*if (product == null)
             {
                 return NotFound();
+            }*/
+
+            if (!cache.TryGetValue(id, out product))
+            {
+                product = await _context.Products
+                    .Include(p => p.Shop)      
+                .ThenInclude(p => p.User)
+                    .FirstOrDefaultAsync(p => p.ProductId == id);
+                if (product != null)
+                {
+                    cache.Set(product.ProductId, product,
+                    new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+                }
+                else
+                {
+                    return NotFound();
+                }    
             }
 
             return View(product);
@@ -71,7 +92,15 @@ namespace SeaOfShops.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(product);
-                await _context.SaveChangesAsync();
+                int n = await _context.SaveChangesAsync();
+                if(n > 0)
+                {
+                    cache.Set(product.ProductId, product, new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+                    });
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ShopId"] = new SelectList(_context.Shops, "ShopId", "ShopName", product.ShopId);

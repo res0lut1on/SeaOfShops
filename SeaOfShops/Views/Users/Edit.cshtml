@@ -6,13 +6,13 @@
 
 <form method="post" asp-action="Edit" asp-controller="Users" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
-    @if (Model.ImageName != "niko.jpg")
+    @if (Model.ImageName != "")
     {
         <input type="hidden" asp-for="ImageName" value="@(Model.ImageName)" />
     }
     else
     {
-        <input type="hidden" asp-for="ImageName" value="none_avatar" />
+        <input type="hidden" asp-for="ImageName" value="none_avatar.jpg" />
     }
     <div class="form-group">
         <input type="hidden" asp-for="Id" />
