@@ -9,6 +9,7 @@ using SeaOfShops.Data;
 using SeaOfShops.DbInitializer;
 using SeaOfShops.DeflateCompressionProvider;
 using SeaOfShops.Models;
+using SeaOfShops.Services;
 using System.IO.Compression;
 using WEB_3505_MIK;
 
@@ -27,6 +28,9 @@ builder.Services.AddTransient<IUserValidator<User>, CustomUserValidator>();
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationContext>();
+
+builder.Services.AddOrderService();
+builder.Services.AddTimeService();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
@@ -73,6 +77,9 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options => // если кл
 });
 
 builder.Services.AddRazorPages();
+
+builder.Services.AddHttpContextAccessor();
+
 
 var app = builder.Build();
 

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SeaOfShops.Data;
 using SeaOfShops.Models;
+using SeaOfShops.Services;
 
 namespace SeaOfShops.Controllers
 {
@@ -16,23 +17,23 @@ namespace SeaOfShops.Controllers
     public class OrderController : Controller
     {
         private readonly ApplicationContext _context;
+        private readonly IOrderItemService<Order> _orderItemService;
 
-        public OrderController(ApplicationContext context)
+        public OrderController(ApplicationContext context, IOrderItemService<Order> orderItemService)
         {
             _context = context;
+            _orderItemService = orderItemService;
         }
         
         // GET: Order
         public async Task<IActionResult> Index()
         {;
-            var orders = await _context.Orders
-                .Include(p => p.Owner)
-                .Include(p => p.Products)
-                .ToListAsync();
+
+            var orders = await _orderItemService.GetAllItemsAsync();
 
             var sortOrders = orders.OrderBy(p => p.Сompleted == true);
+
             return View(sortOrders);
-            //return View(await _context.Orders.ToListAsync());
         }
 
         // GET: Order/Details/5
@@ -43,10 +44,8 @@ namespace SeaOfShops.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Orders
-                .Include(p => p.Products)
-                .Include(p => p.Owner)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
+            var order = await _orderItemService.GetByIdItemsAsync((int)id);
+
             if (order == null)
             {
                 return NotFound();
@@ -70,32 +69,14 @@ namespace SeaOfShops.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(order);
+                //_context.Add(order);
+                await _orderItemService.AddItemsAsync(order);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(order);
         }
 
-        [Authorize(Roles = "admin")]
-        // GET: Order/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Orders == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            var _owner = await _context.Users.FindAsync(order.UserId);
-            _owner = await _context.Users.FindAsync(order.Owner);
-            await _context.Entry(order).Collection(p => p.Products).LoadAsync();
-            return View(order);
-        }
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Complete(int? id)
         {
@@ -114,9 +95,72 @@ namespace SeaOfShops.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }        
+
+        [Authorize(Roles = "admin")]
+        // GET: Order/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null || _context.Orders == null)
+            {
+                return NotFound();
+            }
+
+            var order = await _orderItemService.GetByIdItemsAsync((int)id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return View(order);
         }
 
         [Authorize(Roles = "admin")]
+        // POST: Order/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.Orders == null)
+            {
+                return Problem("Entity set 'ApplicationContext.Orders'  is null.");
+            }
+            //var order = await _context.Orders.FindAsync(id);
+            var order = await _orderItemService.GetByIdWithoutIncludeAsync(id);
+            if (order != null)
+            {
+                _context.Orders.Remove(order);
+            }
+            
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool OrderExists(int id)
+        {
+          return _context.Orders.Any(e => e.OrderId == id);
+        }
+
+        /*[Authorize(Roles = "admin")]
+                // GET: Order/Edit/5
+                public async Task<IActionResult> Edit(int? id)
+                {
+                    if (id == null || _context.Orders == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var order = await _context.Orders.FindAsync(id);
+                    if (order == null)
+                    {
+                        return NotFound();
+                    }
+                    var _owner = await _context.Users.FindAsync(order.UserId);
+                    _owner = await _context.Users.FindAsync(order.Owner);
+                    await _context.Entry(order).Collection(p => p.Products).LoadAsync();
+                    return View(order);
+                }*/
+        /*[Authorize(Roles = "admin")]
         // POST: Order/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -148,50 +192,6 @@ namespace SeaOfShops.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(order);
-        }
-
-        [Authorize(Roles = "admin")]
-        // GET: Order/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Orders == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders
-                .FirstOrDefaultAsync(m => m.OrderId == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
-        }
-
-        [Authorize(Roles = "admin")]
-        // POST: Order/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Orders == null)
-            {
-                return Problem("Entity set 'ApplicationContext.Orders'  is null.");
-            }
-            var order = await _context.Orders.FindAsync(id);
-            if (order != null)
-            {
-                _context.Orders.Remove(order);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool OrderExists(int id)
-        {
-          return _context.Orders.Any(e => e.OrderId == id);
-        }
+        }*/
     }
 }
