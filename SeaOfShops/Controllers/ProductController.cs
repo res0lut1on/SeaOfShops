@@ -35,26 +35,7 @@ namespace SeaOfShops.Controllers
         [ServiceFilter(typeof(ValidateEntityExistsAttribute<Product>))]
         public IActionResult Details(int? id)
         {
-
-            Product? product = null; 
-            /*if (!cache.TryGetValue(id, out product))
-            {
-                product = await _context.Products
-                    .Include(p => p.Shop)      
-                .ThenInclude(p => p.User)
-                    .FirstOrDefaultAsync(p => p.Id == id) ?? throw new ArgumentNullException(nameof(product));
-
-                if (product != null)
-                {
-                    cache.Set(product.Id, product,
-                    new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
-                }
-                else
-                {
-                    return NotFound();
-                }    
-            }*/
-
+            Product? product = null;             
             product = HttpContext.Items["entity"] as Product;
             return View(product);
         }
@@ -141,7 +122,7 @@ namespace SeaOfShops.Controllers
                 if (orders.FirstOrDefault(p => p.Products.FirstOrDefault(c => c.Id == product.Id) is not null) is not null) // если продукт есть хотя бы в одном заказе
                 {
                     //product.IsDeleted = true; 
-                    var a = _context.Products.FirstOrDefault(p => p.Id == product.Id);
+                    var a = _context.Products.FirstOrDefault(p => p.Id == product.Id);                                      // не знаю, как решить проблему с отслеживанием в EntityFramework, кроме NoTracking()
                     a.IsDeleted = true;                                                                                     // помечаю, что не нужно выводить его в главном списке
                     _context.Products.Update(a);
                     ViewBag.CountProducts =  _context.Products.Count() - 1;

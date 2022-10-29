@@ -69,12 +69,12 @@ namespace SeaOfShops.Filters
             if (typeof(T) == typeof(Order))                                       
             {
                 Order? order = null;
-                if (!_cache.TryGetValue(id, out order))
+                if (!_cache.TryGetValue(id.ToString(), out order))
                 {
                     order =  _orderItemService.GetByIdItemsAsync(id).Result;                                        
                     if (order is not null)
                     {   
-                        _cache.Set(order.Id, order,                                                                                     // ?k?e?y?
+                        _cache.Set(order.Id.ToString(), order,                                                                                     // ?k?e?y?
                         new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));                                  
                         context.HttpContext.Items.Add("entity", order);
                         return;
