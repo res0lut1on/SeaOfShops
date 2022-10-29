@@ -2,9 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-/*using Microsoft.IdentityModel.Tokens;*/
 using SeaOfShops.Data;
 using SeaOfShops.DbInitializer;
 using SeaOfShops.DeflateCompressionProvider;

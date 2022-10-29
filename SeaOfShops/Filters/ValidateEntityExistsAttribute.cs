@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using SeaOfShops.Controllers;
 using SeaOfShops.Data;
 using SeaOfShops.Models;
 using SeaOfShops.Services;
@@ -45,7 +46,7 @@ namespace SeaOfShops.Filters
             if (typeof(T) == typeof(Product))                                       // я знаю, что можно лучше абстрагироваться с рефлексией, но не знаю как
             {
                 Product? product = null;
-                if (!_cache.TryGetValue(id, out product))
+                if (!_cache.TryGetValue(id, out product) || ProductController._flagForChangeCache == true)
                 {
                     product =  _context.Products
                        .Include(p => p.Shop)
@@ -55,6 +56,7 @@ namespace SeaOfShops.Filters
                     {
                         _cache.Set(product.Id, product,
                         new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+                        ProductController._flagForChangeCache = false;
                         context.HttpContext.Items.Add("entity", product);
                         return;
                     }
@@ -69,13 +71,14 @@ namespace SeaOfShops.Filters
             if (typeof(T) == typeof(Order))                                       
             {
                 Order? order = null;
-                if (!_cache.TryGetValue(id.ToString(), out order))
+                if (!_cache.TryGetValue(id.ToString(), out order) || OrderController._flagForChangeCache == true)
                 {
                     order =  _orderItemService.GetByIdItemsAsync(id).Result;                                        
                     if (order is not null)
                     {   
                         _cache.Set(order.Id.ToString(), order,                                                                                     // ?k?e?y?
-                        new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));                                  
+                        new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+                        OrderController._flagForChangeCache = false;
                         context.HttpContext.Items.Add("entity", order);
                         return;
                     }

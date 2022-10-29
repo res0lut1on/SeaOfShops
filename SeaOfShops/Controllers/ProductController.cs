@@ -17,6 +17,8 @@ namespace SeaOfShops.Controllers
         private readonly ApplicationContext _context;
         IOrderItemService<Order> _orderItemService;
         private IMemoryCache cache;
+        internal static bool _flagForChangeCache = false;
+
         public ProductController(ApplicationContext context, IMemoryCache memoryCache, IOrderItemService<Order> orderItemService)
         {
             _context = context;
@@ -36,7 +38,7 @@ namespace SeaOfShops.Controllers
         public IActionResult Details(int? id)
         {
             Product? product = null;             
-            product = HttpContext.Items["entity"] as Product;
+            product = HttpContext.Items["entity"] as Product;            
             return View(product);
         }
 
@@ -56,11 +58,16 @@ namespace SeaOfShops.Controllers
             int n = await _context.SaveChangesAsync();
             if(n > 0)
             {
+                if (product.Shop is null)
+                    product.Shop = _context.Shops
+                        .Include(p => p.User)
+                        .FirstOrDefault(p => p.ShopId == product.ShopId);
                 cache.Set(product.Id, product, new MemoryCacheEntryOptions
                 {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
                 });
             }
+            _flagForChangeCache = true;
             return RedirectToAction(nameof(Index));                               
         }
         [ServiceFilter(typeof(ValidateEntityExistsAttribute<Product>))]
@@ -92,6 +99,7 @@ namespace SeaOfShops.Controllers
                     throw;
                 }
             }
+            _flagForChangeCache = true;
             return RedirectToAction(nameof(Index));            
         }
         private bool ProductExists(int id)
@@ -132,7 +140,7 @@ namespace SeaOfShops.Controllers
                 }
             }            
             _context.SaveChanges();
-            
+            _flagForChangeCache = true;
             return RedirectToAction(nameof(Index));
         }
 

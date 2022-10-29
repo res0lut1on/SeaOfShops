@@ -21,7 +21,7 @@ namespace SeaOfShops.Controllers
         private readonly ApplicationContext _context;
         private IMemoryCache cache;
         private readonly IOrderItemService<Order> _orderItemService;
-        private static bool _flagForCangeCache = false;
+        internal static bool _flagForChangeCache = false;
         public OrderController(ApplicationContext context, IOrderItemService<Order> orderItemService, IMemoryCache memoryCache)
         {
             cache = memoryCache;
@@ -34,7 +34,7 @@ namespace SeaOfShops.Controllers
         {
             string id = "all";
             List<Order>? orders = null;
-            if (!cache.TryGetValue(id, out orders) || _flagForCangeCache == true)
+            if (!cache.TryGetValue(id, out orders) || _flagForChangeCache == true)
             {
                 orders = await _orderItemService.GetAllItemsAsync() ?? throw new ArgumentNullException(nameof(orders));
 
@@ -42,14 +42,13 @@ namespace SeaOfShops.Controllers
                 {
                     cache.Set(id, orders,
                     new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
-                    _flagForCangeCache = false;
+                    _flagForChangeCache = false;
                 }
                 else
                 {
                     return NotFound();
                 }
-            }
-            //var orders = await _orderItemService.GetAllItemsAsync();
+            }            
             var sortOrders = orders.OrderBy(p => p.Сompleted == true);
             return View(sortOrders);
         }
@@ -66,10 +65,12 @@ namespace SeaOfShops.Controllers
         [ServiceFilter(typeof(ValidateEntityExistsAttribute<Order>))]
         public async Task<IActionResult> Complete(int? id)
         {
-            var order = HttpContext.Items["entity"] as Order;
-            order.Сompleted = true;
-            await _context.SaveChangesAsync();
-            _flagForCangeCache = true;
+            var order = HttpContext.Items["entity"] as Order;                                                   // Получаю с помощью фильтра
+            var a = _context.Orders.FirstOrDefault(p => p.Id == order.Id);                                      // не знаю, как решить проблему с отслеживанием в EntityFramework, кроме NoTracking()
+            a.Сompleted = true;                                                                                 // помечаю, что не нужно выводить его в главном списке
+            _context.Orders.Update(a);
+            _context.SaveChanges();
+            _flagForChangeCache = true;
             return RedirectToAction(nameof(Index));
         }        
 
@@ -98,14 +99,14 @@ namespace SeaOfShops.Controllers
                 _context.Orders.Remove(order);
             }            
             await _context.SaveChangesAsync();
-            _flagForCangeCache = true;
+            _flagForChangeCache = true;
             return RedirectToAction(nameof(Index));
         }        
 
         // GET: Order/Create
         [Authorize(Roles = "admin")]
         public IActionResult Create()
-        {
+        {            
             return View();
         }
 
@@ -118,7 +119,7 @@ namespace SeaOfShops.Controllers
         {
             await _orderItemService.AddItemsAsync(order);
             await _context.SaveChangesAsync();
-            _flagForCangeCache = true;
+            _flagForChangeCache = true;
             return RedirectToAction(nameof(Index));
         }
         /*[Authorize(Roles = "admin")]
