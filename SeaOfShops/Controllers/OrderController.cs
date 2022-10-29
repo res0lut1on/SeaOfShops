@@ -37,20 +37,12 @@ namespace SeaOfShops.Controllers
             return View(sortOrders);
         }
 
-        // GET: Order/Details/5
-        //[ServiceFilter(typeof(ValidateEntityExistsAttribute<Order>))]
+        // GET: Order/Details/5        
         [ServiceFilter(typeof(ValidateEntityExistsAttribute<Order>))]
-        public async Task<IActionResult> Details(int? id)
-        {
-            var order = await _orderItemService.GetByIdItemsAsync((int)id);
-
-            if (order == null)
-            {
-                return NotFound();
-            }
-            
+        public IActionResult Details(int? id)
+        {            
+            var order = HttpContext.Items["entity"] as Order;            
             return View(order);
-
         }
 
         [Authorize(Roles = "admin")]
@@ -60,8 +52,8 @@ namespace SeaOfShops.Controllers
             return View();
         }
 
-        [Authorize(Roles = "admin")]
         // POST: Order/Create
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -73,40 +65,21 @@ namespace SeaOfShops.Controllers
         }
 
         [Authorize(Roles = "admin")]
+        [ServiceFilter(typeof(ValidateEntityExistsAttribute<Order>))]
         public async Task<IActionResult> Complete(int? id)
         {
-            if (id == null || _context.Orders == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
+            var order = HttpContext.Items["entity"] as Order;
             order.Сompleted = true;
-
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }        
 
-        [Authorize(Roles = "admin")]
         // GET: Order/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [Authorize(Roles = "admin")]
+        [ServiceFilter(typeof(ValidateEntityExistsAttribute<Order>))]
+        public IActionResult Delete(int? id)
         {
-            if (id == null || _context.Orders == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _orderItemService.GetByIdItemsAsync((int)id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
+            var order = HttpContext.Items["entity"] as Order;
             return View(order);
         }
 
@@ -119,23 +92,15 @@ namespace SeaOfShops.Controllers
             if (_context.Orders == null)
             {
                 return Problem("Entity set 'ApplicationContext.Orders'  is null.");
-            }
-            //var order = await _context.Orders.FindAsync(id);
+            }           
             var order = await _orderItemService.GetByIdWithoutIncludeAsync(id);
             if (order != null)
             {
                 _context.Orders.Remove(order);
-            }
-            
+            }            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool OrderExists(int id)
-        {
-          return _context.Orders.Any(e => e.Id == id);
-        }
-
+        }        
         /*[Authorize(Roles = "admin")]
                 // GET: Order/Edit/5
                 public async Task<IActionResult> Edit(int? id)

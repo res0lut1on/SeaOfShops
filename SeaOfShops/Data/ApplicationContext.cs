@@ -11,7 +11,7 @@ namespace SeaOfShops.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Shop> Shops { get; set; }
         public DbSet<Order> Orders { get; set; }
-        private readonly StreamWriter logStream = new StreamWriter("myDbLog.txt", true);
+        //private readonly StreamWriter logStream = new StreamWriter("myDbLog.txt", true);
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
@@ -23,12 +23,12 @@ namespace SeaOfShops.Data
         public override void Dispose()
         {
             base.Dispose();
-            logStream.Dispose();
+            //logStream.Dispose();
         }
         public override async ValueTask DisposeAsync()
         {
             await base.DisposeAsync();
-            await logStream.DisposeAsync();
+           // await logStream.DisposeAsync();
         }
     }
     public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ApplicationContext>

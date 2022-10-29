@@ -4,17 +4,20 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using SeaOfShops.Data;
 using SeaOfShops.Models;
+using SeaOfShops.Services;
 
 namespace SeaOfShops.Filters
 {
     public class ValidateEntityExistsAttribute<T> : IActionFilter where T : class, IEntity
     {
         private readonly ApplicationContext _context;
+        private readonly IOrderItemService<Order> _orderItemService;
         private IMemoryCache _cache;
-        public ValidateEntityExistsAttribute(ApplicationContext context, IMemoryCache cache)
+        public ValidateEntityExistsAttribute(ApplicationContext context, IMemoryCache cache, IOrderItemService<Order> orderItemService)
         {
             _context = context;
             _cache = cache;
+            _orderItemService = orderItemService;
         }
         public void OnActionExecuting(ActionExecutingContext context)
         {
@@ -61,6 +64,27 @@ namespace SeaOfShops.Filters
                     }
                 }
                 context.HttpContext.Items.Add("entity", product);
+            }
+
+            if (typeof(T) == typeof(Order))                                       
+            {
+                Order? order = null;
+                if (!_cache.TryGetValue(id, out order))
+                {
+                    order =  _orderItemService.GetByIdItemsAsync(id).Result;                                        
+                    if (order is not null)
+                    {   
+                        _cache.Set(order.Id, order,                                                                                     // ?k?e?y?
+                        new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));                                  
+                        context.HttpContext.Items.Add("entity", order);
+                        return;
+                    }
+                    else
+                    {
+                        context.Result = new NotFoundResult();
+                    }
+                }
+                context.HttpContext.Items.Add("entity", order);
             }
         }
 

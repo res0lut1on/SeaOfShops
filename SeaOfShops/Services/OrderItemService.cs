@@ -41,6 +41,8 @@ namespace SeaOfShops.Services
         public Task<List<Order>> GetSortedItemsAsync(Func<Order, bool>? filter = null)
         {
             var items = _context.Orders
+                .Include(p => p.Owner)
+                .Include(p => p.Products)
                             .Where(filter ?? (s => true))
                             .ToList();
             return Task.FromResult(items);
