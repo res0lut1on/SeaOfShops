@@ -116,8 +116,7 @@ namespace SeaOfShops.Controllers
             var product = HttpContext.Items["entity"] as Product;
 
             if (product != null)
-            {
-                //var orders = _context.Orders.Include(p => p.Products).ToList();
+            {                
                 var orders = await _orderItemService.GetAllItemsAsync();
                 if (orders.FirstOrDefault(p => p.Products.FirstOrDefault(c => c.Id == product.Id) is not null) is not null) // если продукт есть хотя бы в одном заказе
                 {

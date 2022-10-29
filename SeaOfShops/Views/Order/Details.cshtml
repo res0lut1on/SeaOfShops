@@ -58,7 +58,7 @@
 <div>
     @if (this.User.IsInRole("admin"))
     {
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-dark mt-2">Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-dark mt-2 disabled">Edit</a>
     }
     <a asp-action="Index" class="btn btn-info mt-2">Back to List</a>
 </div>

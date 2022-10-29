@@ -62,7 +62,6 @@ namespace SeaOfShops.Controllers
             return View(order);
         }
 
-
         [Authorize(Roles = "admin")]
         [ServiceFilter(typeof(ValidateEntityExistsAttribute<Order>))]
         public async Task<IActionResult> Complete(int? id)
