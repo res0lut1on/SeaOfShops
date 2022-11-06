@@ -2,9 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SeaOfShops.Models
+
+namespace SeaOfShops.Domain.Entities
 {
-	public class Order : IEntity
+	public class Order : EntityBase<int>
     {
 		[Key]
 		public int Id { get; set; }

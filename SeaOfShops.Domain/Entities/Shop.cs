@@ -3,10 +3,10 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SeaOfShops.Models
+namespace SeaOfShops.Domain.Entities
 {
-	public class Shop
-	{
+	public class Shop : EntityBase<int>
+    {
         [Key]
         public int ShopId { get; set; }
 
