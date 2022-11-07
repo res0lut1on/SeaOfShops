@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileSystemGlobbing.Internal;
-using SeaOfShops.Data;
+using SeaOfShops.Domain.Entities;
+using SeaOfShops.Infrastucture;
 using SeaOfShops.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;

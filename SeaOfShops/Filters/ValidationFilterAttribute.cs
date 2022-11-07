@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SeaOfShops.Data;
 using SeaOfShops.Models;
 
 namespace SeaOfShops.Filters

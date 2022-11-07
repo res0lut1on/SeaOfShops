@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using SeaOfShops.Data;
+using SeaOfShops.Domain.Entities;
 using SeaOfShops.Filters;
+using SeaOfShops.Infrastucture;
 using SeaOfShops.Models;
 using SeaOfShops.Services;
 
@@ -142,67 +143,6 @@ namespace SeaOfShops.Controllers
             _context.SaveChanges();
             _flagForChangeCache = true;
             return RedirectToAction(nameof(Index));
-        }
-
-        //
-        //
-        //
-        //
-        //
-        // 
-        //
-        // Вариант CRUD с одной страницей
-        // GET: Transaction/AddOrEdit
-        public IActionResult AddOrEdit(int id = 0)
-        {
-            PopulateShops();
-            if (id == 0)
-                return View(new Product());
-            return View(_context.Products.Find(id));
-        }
-
-
-        // POST: Transaction/AddOrEdit
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEdit([Bind("TransactionId,CategoryId,Amount,Note,Date")] Product product)
-        {
-            if (ModelState.IsValid)
-            {
-                if (product.Id == 0)
-                    _context.Add(product);
-                else
-                    _context.Update(product);
-
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            PopulateShops();
-            return View(product);
-        }        
-
-
-        [NonAction]
-        public void PopulateShops() // вариант SelectList со значением по умолчанию
-        {
-            var ShopCollection = _context.Shops.ToList();
-            Shop DefaultCategory = new Shop() { ShopId = 0, ShopName = "Choose a Shops" };
-            ShopCollection.Insert(0, DefaultCategory);
-            ViewBag.Shops = ShopCollection;
-            ViewData["ShopId"] = new SelectList(ShopCollection, "ShopId", "ShopName", DefaultCategory);
-        }
-        
-        // GET: mini pagination 
-        /*public async Task<IActionResult> Index(int pageNo)
-        {
-            int pageSize = 6;
-            var products = await _context.Products.Include(t => t.Shop).ToListAsync();
-
-            ViewBag.CountProducts = Math.Ceiling(((double)products.Count() / (double)pageSize));
-
-            var collect = products.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-
-            return View(collect);
-        }*/
+        }       
     }
 }

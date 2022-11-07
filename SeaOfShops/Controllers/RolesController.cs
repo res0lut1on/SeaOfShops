@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SeaOfShops.Domain.Entities;
 using SeaOfShops.Models;
 using SeaOfShops.ViewModels;
 using System.Data;

@@ -9,8 +9,8 @@ namespace SeaOfShops.Domain.Entities
 {
 	public class Product : EntityBase<int>
     {
-        [Key]
-        public int Id { get; set; }
+        //[Key]
+        //public int Id { get; set; }
 
         [DisplayName("Product Name")]
         [Column(TypeName = "nvarchar(50)")]

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SeaOfShops.Domain.Entities;
 using SeaOfShops.Filters;
 using SeaOfShops.Models;
 using System.Diagnostics;

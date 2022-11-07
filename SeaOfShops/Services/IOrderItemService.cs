@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using SeaOfShops.Domain.Entities;
 using SeaOfShops.Models;
 
 namespace SeaOfShops.Services

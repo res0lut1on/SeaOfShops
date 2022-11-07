@@ -29,4 +29,10 @@
     <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SeaOfShops.Domain\SeaOfShops.Domain.csproj" />
+    <ProjectReference Include="..\SeaOfShops.Infrastucture\SeaOfShops.Infrastucture.csproj" />
+    <ProjectReference Include="..\SeaOfShops.Service\SeaOfShops.Service.csproj" />
+  </ItemGroup>
+
 </Project>
