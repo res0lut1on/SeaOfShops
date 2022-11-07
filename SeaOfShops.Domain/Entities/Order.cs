@@ -2,12 +2,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SeaOfShops.Models
+
+namespace SeaOfShops.Domain.Entities
 {
-	public class Order : IEntity
+	public class Order : EntityBase<int>
     {
-		[Key]
-		public int Id { get; set; }
+		//[Key]
+		//public int Id { get; set; }
         [Required(ErrorMessage = "Price is required.")]
         public int Price { get; set; }
         [DisplayName("Owner")]

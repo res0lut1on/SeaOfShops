@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SeaOfShops.Models
+namespace SeaOfShops.Domain.Entities
 {
     public class User : IdentityUser
     {
@@ -15,8 +15,7 @@ namespace SeaOfShops.Models
         public string? LastName { get; set; }
         [DisplayName("User Address")]
         [Column(TypeName = "nvarchar(100)")]
-        public string? UserAddress { get; set; }
-        // есть еще вариант с сохранением картинки в таблице через byte []
+        public string? UserAddress { get; set; }        
         [Column(TypeName = "nvarchar(100)")]
         public string ImageName { get; set; } = "";
 

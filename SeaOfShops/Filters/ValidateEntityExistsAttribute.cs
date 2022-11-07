@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using SeaOfShops.Controllers;
-using SeaOfShops.Data;
-using SeaOfShops.Models;
+using SeaOfShops.Domain.Entities;
+using SeaOfShops.Infrastucture;
 using SeaOfShops.Services;
 
 namespace SeaOfShops.Filters
 {
-    public class ValidateEntityExistsAttribute<T> : IActionFilter where T : class, IEntity
+    public class ValidateEntityExistsAttribute<T> : IActionFilter where T : class, IEntityBase<int>
     {
         private readonly ApplicationContext _context;
         private readonly IOrderItemService<Order> _orderItemService;
@@ -24,9 +24,9 @@ namespace SeaOfShops.Filters
         {
             var id = 0;
 
-            if (context.ActionArguments.ContainsKey("id"))
+            if (context.ActionArguments.ContainsKey("Id"))
             {
-                id = (int)context.ActionArguments["id"];
+                id = (int)context.ActionArguments["Id"];
             }
             else
             {

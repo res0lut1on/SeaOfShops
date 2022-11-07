@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using SeaOfShops.Domain.Entities;
 using SeaOfShops.Models;
 using SeaOfShops.ViewModels;
 

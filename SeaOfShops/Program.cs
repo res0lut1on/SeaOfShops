@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using SeaOfShops.Data;
 using SeaOfShops.DbInitializer;
 using SeaOfShops.DeflateCompressionProvider;
+using SeaOfShops.Domain.Entities;
 using SeaOfShops.Filters;
-using SeaOfShops.Models;
+using SeaOfShops.Infrastucture;
 using SeaOfShops.Services;
 using System.IO.Compression;
 using WEB_3505_MIK;
@@ -26,6 +26,7 @@ builder.Services.AddScoped<ValidationFilterAttribute>();
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationContext>();
+
 
 builder.Services.AddOrderService();
 builder.Services.AddTimeService();

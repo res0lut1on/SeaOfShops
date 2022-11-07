@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using SeaOfShops.Data;
-using SeaOfShops.Models;
+using SeaOfShops.Domain.Entities;
+using SeaOfShops.Infrastucture;
 
 namespace SeaOfShops.DbInitializer
 {

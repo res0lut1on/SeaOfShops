@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SeaOfShops.Domain.Entities;
 using SeaOfShops.Models;
 using System.Text.RegularExpressions;
 

@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using SeaOfShops.Data;
-using SeaOfShops.Models;
-using System.Linq.Expressions;
+using SeaOfShops.Domain.Entities;
+using SeaOfShops.Infrastucture;
 
 namespace SeaOfShops.Services
 {
@@ -67,5 +66,6 @@ namespace SeaOfShops.Services
                 .FindAsync(id);
             return item;
         }
+
     }
 }

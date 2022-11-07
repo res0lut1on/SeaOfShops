@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using SeaOfShops.Data;
+using SeaOfShops.Domain.Entities;
 using SeaOfShops.Filters;
+using SeaOfShops.Infrastucture;
 using SeaOfShops.Models;
 using SeaOfShops.Services;
 
@@ -117,7 +118,7 @@ namespace SeaOfShops.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Create([Bind("Id,Price,Сompleted")] Order order)
         {
-            await _orderItemService.AddItemsAsync(order);
+           // await _orderItemService.AddItemsAsync(order);
             await _context.SaveChangesAsync();
             _flagForChangeCache = true;
             return RedirectToAction(nameof(Index));
